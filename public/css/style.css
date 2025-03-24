@@ -1,0 +1,233 @@
+/* Définir la police principale */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Entête de la page */
+header {
+    background-color: #ff0000; /* Rouge ORTM */
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Style des conteneurs principaux */
+.container {
+    max-width: 1200px;
+    margin: 50px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+/* Contenu des pages */
+.content {
+    padding: 20px;
+}
+
+/* Boutons */
+button {
+    background-color: #008000; /* Vert ORTM */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #005f00;
+}
+
+/* Liens */
+.link {
+    text-decoration: none;
+    color: #008000;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* Styles des liens de navigation */
+.nav-link {
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 5px;
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #f8f9fa;
+}
+
+/* Carte des éléments */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Définition des variables de couleurs */
+:root {
+    --main-bg-color: #ff0000; /* Rouge ORTM */
+    --main-text-color: #ff0000; /* Rouge ORTM */
+    --second-text-color: #384b70; /* Bleu légèrement sombre */
+    --second-bg-color: #e5d0ac; /* Beige clair */
+}
+
+/* Application des variables */
+.primary-text {
+    color: var(--main-text-color);
+}
+
+.second-text {
+    color: var(--second-text-color);
+}
+
+.primary-bg {
+    background-color: var(--main-bg-color);
+}
+
+.secondary-bg {
+    background-color: var(--second-bg-color);
+}
+
+/* Arrondi complet */
+.rounded-full {
+    border-radius: 100%;
+}
+
+#wrapper {
+    overflow-x: hidden;
+    background-image: linear-gradient(to right, #d1f7d1, #e8f5e8, #b8d8b8);
+}
+
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+/* Icône du menu */
+#menu-toggle {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+/* Liste des éléments du menu */
+.list-group-item {
+    border: none;
+    padding: 20px 30px;
+    font-size: 16px;
+}
+
+.list-group-item.active {
+    background-color: transparent;
+    color: var(--main-text-color);
+    font-weight: bold;
+    border: none;
+}
+
+/* Responsivité pour les écrans larges */
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+
+    .logo img {
+        width: 150px;
+        height: auto;
+    }
+}
+
+/* Pagination */
+.pagination .page-item .page-link {
+    padding: 2px 6px;
+    font-size: 14px;
+}
+
+.pagination .page-link {
+    padding: 2px 5px !important;
+    font-size: 14px !important;
+}
+
+/* Police générale */
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+/* Style spécifique pour les formulaires */
+input[type="text"], input[type="password"], select, textarea {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, select:focus, textarea:focus {
+    border-color: #008000; /* Vert ORTM */
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.2);
+}
+
+/* Style des alertes */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
