@@ -7,25 +7,30 @@
     .pagination {
         justify-content: center;
     }
+
     .pagination .page-link {
         padding: 4px 8px;
         font-size: 16px;
         border: 1px solid #007BFF;
         color: #007BFF;
     }
+
     .pagination .page-item.active .page-link {
         background-color: #007BFF;
         border-color: #007BFF;
         color: white;
     }
+
     .pagination .page-link:hover {
         background-color: #0056b3;
         border-color: #0056b3;
         color: white;
     }
+
     .form-group {
         margin-bottom: 20px;
     }
+
     .form-control {
         margin-bottom: 15px;
     }
@@ -42,7 +47,7 @@
                     <form action="{{ isset($emetteur) ? route('admin.emetteurs.update', $emetteur->id) : route('admin.emetteurs.store') }}" method="POST">
                         @csrf
                         @isset($emetteur)
-                            @method('PUT')
+                        @method('PUT')
                         @endisset
 
                         <div class="form-group">
@@ -59,9 +64,9 @@
                             <select name="id_localisation" id="id_localisation" class="form-control" required>
                                 <option value="">Sélectionner une localisation</option>
                                 @foreach ($localisations as $localisation)
-                                    <option value="{{ $localisation->id }}" {{ isset($emetteur) && $emetteur->id_localisation == $localisation->id ? 'selected' : '' }}>
-                                        {{ $localisation->nom }}
-                                    </option>
+                                <option value="{{ $localisation->id }}" {{ isset($emetteur) && $emetteur->id_localisation == $localisation->id ? 'selected' : '' }}>
+                                    {{ $localisation->nom }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -86,9 +91,9 @@
 
                         <button type="submit" class="btn btn-primary w-100">
                             @isset($emetteur)
-                                Modifier
+                            Modifier
                             @else
-                                Ajouter
+                            Ajouter
                             @endisset
                         </button>
                     </form>
@@ -117,31 +122,31 @@
                             </thead>
                             <tbody>
                                 @if(isset($emetteurs) && $emetteurs->count() > 0)
-                                    @foreach ($emetteurs as $emetteur)
-                                        <tr>
-                                            <td>{{ ucfirst($emetteur->type) }}</td>
-                                            <td>{{ $emetteur->localisation->nom }}</td>
-                                            <td>{{ $emetteur->date_installation }}</td>
-                                            <td>{{ $emetteur->dernier_maintenance ?? 'N/A' }}</td>
-                                            <td>{{ $emetteur->maintenance_prevue ?? 'N/A' }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.emetteurs.edit', $emetteur->id) }}" class="btn btn-warning btn-sm">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
-                                                <form action="{{ route('admin.emetteurs.destroy', $emetteur->id) }}" method="POST" class="delete-form d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                        <i class="bi bi-trash3"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                @foreach ($emetteurs as $emetteur)
+                                <tr>
+                                    <td>{{ ucfirst($emetteur->type) }}</td>
+                                    <td>{{ $emetteur->localisation->nom }}</td>
+                                    <td>{{ $emetteur->date_installation }}</td>
+                                    <td>{{ $emetteur->dernier_maintenance ?? 'N/A' }}</td>
+                                    <td>{{ $emetteur->maintenance_prevue ?? 'N/A' }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.emetteurs.edit', $emetteur->id) }}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form action="{{ route('admin.emetteurs.destroy', $emetteur->id) }}" method="POST" class="delete-form d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
                                 @else
-                                    <tr>
-                                        <td colspan="6" class="text-center">Aucun émetteur trouvé.</td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="6" class="text-center">Aucun émetteur trouvé.</td>
+                                </tr>
                                 @endif
                             </tbody>
                         </table>
@@ -162,50 +167,49 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Affichage du message de succès
-    @if (session('success'))
-        Swal.fire({
-            title: "Succès !",
-            text: "{{ session('success') }}",
-            icon: "success",
-            timer: 2000,
-            showConfirmButton: false
-        });
-    @endif
-
-    // Confirmation de suppression
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function (event) {
-            event.preventDefault();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Affichage du message de succès
+        if (session('success'))
             Swal.fire({
-                title: "Êtes-vous sûr ?",
-                text: "Cette action est irréversible !",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Oui, supprimer !",
-                cancelButtonText: "Annuler"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+                title: "Succès !",
+                text: "{{ session('success') }}",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+        // Confirmation de suppression
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "Êtes-vous sûr ?",
+                    text: "Cette action est irréversible !",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Oui, supprimer !",
+                    cancelButtonText: "Annuler"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
     });
-});
 
-// Recherche dynamique
-document.getElementById("search").addEventListener("keyup", function() {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#emetteursList tbody tr");
+    // Recherche dynamique
+    document.getElementById("search").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#emetteursList tbody tr");
 
-    rows.forEach(row => {
-        let text = row.textContent.toLowerCase();
-        row.style.display = text.includes(filter) ? "" : "none";
+        rows.forEach(row => {
+            let text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
     });
-});
 </script>
 
 @endsection

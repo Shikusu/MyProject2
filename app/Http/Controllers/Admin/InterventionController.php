@@ -42,9 +42,14 @@ class InterventionController extends Controller
         $intervention->type_alerte = $request->type_alerte;
         $intervention->save();
 
+
+        //maj emetteur
+        $emetteur->panne_declenchee = 1;
+        $emetteur->date_panne = $request->date_panne;
+        $emetteur->save();
+
+
         // Redirection avec un message de succès
         return redirect()->route('admin.interventions.index')->with('success', 'Panne déclenchée avec succès.');
     }
-
-    // Optionnel: Ajouter une méthode pour afficher un formulaire ou gérer les réparations
 }

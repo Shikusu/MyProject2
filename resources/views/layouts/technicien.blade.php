@@ -1,4 +1,3 @@
-
 <html lang="fr">
 
 <head>
@@ -28,6 +27,7 @@
 </head>
 
 <body>
+    @yield('content')
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
         <div class="bg-white" id="sidebar-wrapper">
@@ -42,9 +42,9 @@
                     <i class="bi bi-radioactive me-2"></i> Émetteurs en Suivi
                 </a>
                 @isset($intervention) <!-- Vérifier si l'intervention est définie -->
-                    <a href="{{ route('technicien.reparations', ['id' => $intervention->id]) }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
-                        <i class="bi bi-tools me-2"></i> Réparations
-                    </a>
+                <a href="{{ route('technicien.reparations', ['id' => $intervention->id]) }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
+                    <i class="bi bi-tools me-2"></i> Réparations
+                </a>
                 @endisset
                 <a href="{{ route('technicien.historiques') }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
                     <i class="bi bi-file-earmark-text me-2"></i> Historique des Interventions
@@ -109,7 +109,7 @@
             });
         });
     </script>
-
+    @yield('scripts')
 </body>
 
 </html>
