@@ -21,7 +21,17 @@ class TechnicianController extends Controller
 
     public function emetteurs()
     {
+        // Récupère tous les émetteurs avec leur localisation
         $emetteurs = Emetteur::with('localisation')->get();
+
+        // Si le statut est null, on lui assigne une valeur par défaut
+        foreach ($emetteurs as $emetteur) {
+            if (is_null($emetteur->status)) {
+                $emetteur->status = 'Actif';  // Valeur par défaut si statut est vide
+                $emetteur->save();  // Sauvegarder le statut dans la base de données
+            }
+        }
+
         return view('technicien.emetteurs', compact('emetteurs'));
     }
 
@@ -70,6 +80,9 @@ class TechnicianController extends Controller
             return redirect()->back()->with('error', 'Émetteur introuvable.');
         }
 
+        // Mettre à jour l'état de l'émetteur en "En panne"
+        $emetteur->update(['status' => 'En panne']);
+
         // Créer une alerte
         $alerte = Alerte::create([
             'emetteur_id' => $emetteurId,
@@ -85,7 +98,7 @@ class TechnicianController extends Controller
             'date_panne' => $request->input('date_panne'),
             'message' => $request->input('message'),
             'type_alerte' => $request->input('type_alerte'),
-            'status' => 'en_cours',
+            'status' => 'En cours de réparation',
         ]);
 
         return redirect()->route('technicien.alertes')->with('success', 'Alerte déclenchée.');
@@ -113,6 +126,11 @@ class TechnicianController extends Controller
         $intervention = Intervention::with('emetteur')->findOrFail($id);
         $pieces = Piece::all(); // Charger toutes les pièces disponibles
 
+        // Mettre à jour l'état de l'émetteur en "En cours de réparation"
+        if ($intervention->emetteur) {
+            $intervention->emetteur->update(['status' => 'En cours de réparation']);
+        }
+
         return view('technicien.reparations', compact('intervention', 'pieces'));
     }
 
@@ -129,16 +147,37 @@ class TechnicianController extends Controller
         }
 
         $intervention = Intervention::findOrFail($id);
+        $emetteur = $intervention->emetteur;
+
+        // Mettre à jour l'intervention
         $intervention->update([
-            'status' => 'resolu',
+            'status' => 'Résolu',
             'details_reparation' => $request->input('details_reparation'),
+            'date_reparation' => now(),
         ]);
 
-        // Associer les pièces utilisées à l'intervention
+        // Mettre à jour l'état de l'émetteur en "Actif"
+        if ($emetteur) {
+            $emetteur->update([
+                'status' => 'Actif',
+                'derniere_maintenance' => now(),
+            ]);
+        }
+
+        // Associer les pièces utilisées à l'intervention et mettre à jour le stock
         if ($request->has('pieces_utilisees')) {
+            $pieces = Piece::whereIn('id', $request->input('pieces_utilisees'))->get();
+            foreach ($pieces as $piece) {
+                $piece->decrement('quantite', 1);
+            }
             $intervention->pieces()->sync($request->input('pieces_utilisees'));
         }
 
-        return redirect()->route('technicien.historiques')->with('success', 'Réparation enregistrée.');
+        // Marquer l'alerte associée comme traitée
+        if ($intervention->alerte) {
+            $intervention->alerte->update(['status' => 'traitée']);
+        }
+
+        return redirect()->route('technicien.historiques')->with('success', 'Réparation enregistrée avec succès.');
     }
 }

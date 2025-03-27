@@ -41,6 +41,9 @@
                 <a href="{{ route('admin.emetteurs.index') }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
                     <i class="bi bi-broadcast me-2"></i> Emetteur
                 </a>
+                <a href="{{ route('admin.stations.index') }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
+                    <i class="bi bi-broadcast me-2"></i> Stations
+                </a>
                 <a href="{{ route('admin.pieces.index') }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
                     <i class="bi bi-puzzle-fill me-2"></i> Pièces
                 </a>

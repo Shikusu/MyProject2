@@ -15,6 +15,7 @@ class CreateEmetteursTable extends Migration
             $table->date('date_installation');
             $table->date('derniere_maintenance')->nullable(); // Correction du nom pour cohérence
             $table->date('maintenance_prevue')->nullable();
+            $table->enum('status', ['Actif', 'En panne', 'En cours de réparation'])->default('Actif'); // Ajout du statut
             $table->timestamps();
         });
     }
