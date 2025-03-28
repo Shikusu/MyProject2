@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Emetteur;
 use App\Models\Admin\Alerte;
+use App\Models\Admin\Piece;
 use App\Models\Admin\Intervention;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,8 @@ class InterventionController extends Controller
     {
         $emetteurs = Emetteur::with('localisation', 'interventions')->get();
         $alertesTypes = Alerte::distinct()->pluck('type', 'type');
-        $interventions = Intervention::with('emetteur')->get();
+        $interventions = Intervention::whereNull('date_reparation')->get();
+
 
         return view('admin.interventions', compact('emetteurs', 'alertesTypes', 'interventions'));
     }
@@ -51,5 +53,33 @@ class InterventionController extends Controller
 
         // Redirection avec un message de succès
         return redirect()->route('admin.interventions.index')->with('success', 'Panne déclenchée avec succès.');
+    }
+
+    public function lancementReparation(Request $request, $id)
+    {
+        // Validate input
+        $request->validate([
+            'date_reparation' => 'required|date',
+            'date_reparation_fait' => 'required|date',
+        ]);
+
+        // Find the intervention by ID
+        $intervention = Intervention::findOrFail($id);
+
+        // Update fields
+        $intervention->date_reparation = $request->date_reparation;
+        $intervention->date_reparation_fait = $request->date_reparation_fait;
+        $intervention->save();
+
+        if ($request->has('pieces')) {
+            $pieceIds = [];
+            foreach ($request->pieces as $pieceName) {
+                $piece = Piece::firstOrCreate(['nom' => $pieceName]);
+                $pieceIds[] = $piece->id;
+            }
+
+            $intervention->pieces()->sync($pieceIds);
+        }
+        return response()->json(['success' => true, 'message' => 'Réparation et pièces enregistrées avec succès.']);
     }
 }

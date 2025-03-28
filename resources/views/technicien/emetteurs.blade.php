@@ -32,9 +32,9 @@
                                     <td>{{ $emetteur->dernier_maintenance }}</td>
                                     <td>{{ $emetteur->maintenance_prevue }}</td>
                                     <td>
-                                        @if($emetteur->status == 'Actif')
+                                        @if ($emetteur->status == 'active')
                                             <span class="badge bg-success">Actif</span>
-                                        @elseif($emetteur->status == 'En panne')
+                                        @elseif($emetteur->status == 'panne')
                                             <span class="badge bg-danger">En Panne</span>
                                         @elseif($emetteur->status == 'En cours de réparation')
                                             <span class="badge bg-warning text-dark">En cours de réparation</span>
@@ -43,8 +43,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detailsModal"
-                                            data-id="{{ $emetteur->id }}"
+                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#detailsModal" data-id="{{ $emetteur->id }}"
                                             data-localisation="{{ $emetteur->localisation->nom }}"
                                             data-type="{{ $emetteur->type }}"
                                             data-installation="{{ $emetteur->date_installation }}"
@@ -89,51 +89,52 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var detailsModal = document.getElementById("detailsModal");
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var detailsModal = document.getElementById("detailsModal");
 
-        detailsModal.addEventListener("show.bs.modal", function (event) {
-            var button = event.relatedTarget;
+            detailsModal.addEventListener("show.bs.modal", function(event) {
+                var button = event.relatedTarget;
 
-            // Récupération des données
-            var localisation = button.getAttribute("data-localisation");
-            var type = button.getAttribute("data-type");
-            var installation = button.getAttribute("data-installation");
-            var maintenance = button.getAttribute("data-maintenance");
-            var maintenancePrevue = button.getAttribute("data-maintenance-prevue");
-            var status = button.getAttribute("data-status");
+                // Récupération des données
+                var localisation = button.getAttribute("data-localisation");
+                var type = button.getAttribute("data-type");
+                var installation = button.getAttribute("data-installation");
+                var maintenance = button.getAttribute("data-maintenance");
+                var maintenancePrevue = button.getAttribute("data-maintenance-prevue");
+                var status = button.getAttribute("data-status");
 
-            // Mise à jour des informations dans le modal
-            document.getElementById("modalLocalisation").textContent = localisation;
-            document.getElementById("modalType").textContent = type;
-            document.getElementById("modalInstallation").textContent = installation;
-            document.getElementById("modalMaintenance").textContent = maintenance;
-            document.getElementById("modalMaintenancePrevue").textContent = maintenancePrevue;
+                // Mise à jour des informations dans le modal
+                document.getElementById("modalLocalisation").textContent = localisation;
+                document.getElementById("modalType").textContent = type;
+                document.getElementById("modalInstallation").textContent = installation;
+                document.getElementById("modalMaintenance").textContent = maintenance;
+                document.getElementById("modalMaintenancePrevue").textContent = maintenancePrevue;
 
-            // Mise à jour du statut avec une couleur
-            var modalStatus = document.getElementById("modalStatus");
-            modalStatus.textContent = status;
+                // Mise à jour du statut avec une couleur
+                var modalStatus = document.getElementById("modalStatus");
+                modalStatus.textContent = status;
 
-            // Réinitialisation des classes de couleur
-            modalStatus.className = "badge"; // On réinitialise les classes du badge avant de les ajouter.
+                // Réinitialisation des classes de couleur
+                modalStatus.className =
+                    "badge"; // On réinitialise les classes du badge avant de les ajouter.
 
-            // Application de la couleur selon le statut
-            switch (status) {
-                case 'Actif':
-                    modalStatus.classList.add("bg-success");
-                    break;
-                case 'En panne':
-                    modalStatus.classList.add("bg-danger");
-                    break;
-                case 'En cours de réparation':
-                    modalStatus.classList.add("bg-warning", "text-dark");
-                    break;
-                default:
-                    modalStatus.classList.add("bg-secondary");
-                    break;
-            }
+                // Application de la couleur selon le statut
+                switch (status) {
+                    case 'active':
+                        modalStatus.classList.add("bg-success");
+                        break;
+                    case 'panne':
+                        modalStatus.classList.add("bg-danger");
+                        break;
+                    case 'En cours de réparation':
+                        modalStatus.classList.add("bg-warning", "text-dark");
+                        break;
+                    default:
+                        modalStatus.classList.add("bg-secondary");
+                        break;
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endsection

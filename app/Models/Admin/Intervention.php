@@ -16,7 +16,8 @@ class Intervention extends Model
         'type_alerte',
         'date_reparation',         // Date de la réparation
         'description_reparation',  // Description de la réparation
-        'status',                  // Statut de l'intervention (ex: 'réparée')
+        'status',
+        'date_reparation_fait'                // Statut de l'intervention (ex: 'réparée')
     ];
 
     // Définir la relation entre Intervention et Emetteur

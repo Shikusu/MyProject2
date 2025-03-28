@@ -75,3 +75,5 @@ Route::middleware(['auth', 'role:technicien'])->prefix('technicien')->name('tech
     Route::post('/reparations/{id}', [TechnicianController::class, 'saveRepair'])->name('saveRepair');
     Route::get('/intervention/{id}', [TechnicianController::class, 'showInterventionForm'])->name('intervention.show');
 });
+Route::post('/interventions/{id}/lancement-reparation', [InterventionController::class, 'lancementReparation'])
+    ->name('admin.interventions.lancementReparation');

@@ -22,15 +22,16 @@ class Emetteur extends Model
         'maintenance_prevue',
         'status', // Ajouté pour l'état de l'émetteur
         'panne_declenchee', // Ajouté pour marquer la panne
-        'date_panne', // Ajouté pour enregistrer la date de panne
+        'date_panne',
+        '' // Ajouté pour enregistrer la date de panne
     ];
 
     // Relation avec la table Localisation
     // Dans le modèle Emetteur
-public function localisation()
-{
-    return $this->belongsTo(Localisation::class, 'id_localisation');
-}
+    public function localisation()
+    {
+        return $this->belongsTo(Localisation::class, 'id_localisation');
+    }
 
 
 

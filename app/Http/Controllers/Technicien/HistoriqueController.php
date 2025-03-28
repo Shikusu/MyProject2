@@ -19,6 +19,7 @@ class HistoriqueController extends Controller
         // Récupérer toutes les interventions
         $interventions = Intervention::with('emetteur')
             ->orderBy('date_panne', 'desc')
+            ->whereNull('date_reparation')
             ->get();
 
         // Récupérer toutes les pièces disponibles
@@ -47,6 +48,6 @@ class HistoriqueController extends Controller
 
         // Retourner vers la page des historiques avec un message de succès
         return redirect()->route('technicien.historiques')
-                         ->with('success', 'Les interventions sélectionnées ont été supprimées avec succès.');
+            ->with('success', 'Les interventions sélectionnées ont été supprimées avec succès.');
     }
 }
