@@ -188,7 +188,14 @@
                     pieces: pieces
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
                 alert(data.message);
                 location.reload(); // Reload to remove the intervention from the list

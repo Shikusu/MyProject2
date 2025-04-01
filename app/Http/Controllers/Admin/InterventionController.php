@@ -65,8 +65,10 @@ class InterventionController extends Controller
 
         // Find the intervention by ID
         $intervention = Intervention::findOrFail($id);
-        $emetteur = Emetteur::findOrFail($intervention->emetteurId);
-
+        $emetteur = Emetteur::findOrFail($intervention->emetteur_id);
+        if (!$emetteur) {
+            return response()->json(['error' => 'Intervention not found'], 404);
+        }
         // Update fields
         $intervention->date_reparation = $request->date_reparation;
 
