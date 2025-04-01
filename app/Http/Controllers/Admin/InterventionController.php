@@ -65,11 +65,16 @@ class InterventionController extends Controller
 
         // Find the intervention by ID
         $intervention = Intervention::findOrFail($id);
+        $emetteur = Emetteur::findOrFail($intervention->emetteurId);
 
         // Update fields
         $intervention->date_reparation = $request->date_reparation;
+
+        $emetteur->status = 'En cours de réparation';
+
         $intervention->date_reparation_fait = $request->date_reparation_fait;
         $intervention->save();
+        $emetteur->save();
 
         if ($request->has('pieces')) {
             $pieceIds = [];
