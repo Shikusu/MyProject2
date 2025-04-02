@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Admin\Emetteur;
 use Illuminate\Console\Command;
 use App\Models\Admin\Intervention;
 use Carbon\Carbon;
@@ -15,14 +16,14 @@ class UpdateStatusCommand extends Command
     {
         $now = Carbon::now();
 
-        $interventions = Intervention::whereNotNull('date_reparation_fait')
-            ->where('date_reparation_fait', '<=', $now)
+        $interventions = Intervention::whereNotNull('date_reparation')
+            ->where('date_reparation', '<=', $now)
             ->get();
 
         $updatedCount = 0;
 
         foreach ($interventions as $intervention) {
-            $emetteur = $intervention->emetteur;  // Using the defined relationship
+            $emetteur = Emetteur::findOrFail($intervention->emetteur_id);
 
             if ($emetteur && $emetteur->status === 'En cours de réparation') {
                 $emetteur->status = 'active';
