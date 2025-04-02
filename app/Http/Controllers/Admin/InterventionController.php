@@ -47,6 +47,7 @@ class InterventionController extends Controller
 
         //maj emetteur
         $emetteur->panne_declenchee = 1;
+        $emetteur->status = 'panne';
         $emetteur->date_panne = $request->date_panne;
         $emetteur->save();
 
