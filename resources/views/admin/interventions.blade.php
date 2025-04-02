@@ -23,15 +23,10 @@
                     <td>{{ $emetteur->localisation->nom ?? 'Non définie' }}</td>
                     <td>{{ $emetteur->status!="panne"?$emetteur->status :"En panne" }}</td>
                     <td>
-                        @if ($emetteur->status!="active")
-                        <button class="btn btn-secondary" disabled>En attente</button>
-                        @else
                         <button type="button" class="btn btn-info" data-bs-toggle="modal"
                             data-bs-target="#interventionModal-{{ $emetteur->id }}">
                             Voir les détails
                         </button>
-                        @endif
-
                         <!-- Modal pour afficher les détails de l'émetteur -->
                         <div class="modal fade" id="interventionModal-{{ $emetteur->id }}" tabindex="-1" aria-labelledby="interventionModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -63,6 +58,7 @@
                                                 <label class="form-label"><strong>Maintenance prévue</strong></label>
                                                 <p>{{ $emetteur->maintenance_prevue }}</p>
                                             </div>
+                                            @if ($emetteur->status=="active")
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Date de la panne</strong></label>
                                                 <input type="date" name="date_panne" class="form-control" required>
@@ -80,6 +76,7 @@
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-danger">Déclencher panne</button>
+                                            @endif
                                         </form>
                                     </div>
                                 </div>
