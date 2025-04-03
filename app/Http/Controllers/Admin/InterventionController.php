@@ -56,7 +56,7 @@ class InterventionController extends Controller
 
         $notif = new Notification();
         $notif->message = $message;
-        $notif->user_id = 1; //mogik to be changet
+        $notif->user_id = 1; //logik to be changet
         $notif->save();
 
         // Redirection avec un message de succès
