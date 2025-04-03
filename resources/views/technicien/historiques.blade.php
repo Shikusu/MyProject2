@@ -211,8 +211,8 @@
             datePanneInput.setAttribute('min', today);
 
             datePanneInput.addEventListener('change', function() {
-                if (this.value > today) {
-                    alert('La date de panne ne peut pas être ultérieure à aujourd\'hui');
+                if (this.value < today) {
+                    alert('La date de panne ne peut pas être avant aujourd\'hui');
                     this.value = today;
                 }
             });
