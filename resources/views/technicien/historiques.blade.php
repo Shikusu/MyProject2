@@ -204,6 +204,20 @@
                 console.error("Erreur:", error);
             });
     });
+    document.addEventListener('DOMContentLoaded', function() {
+        const datePanneInput = document.getElementById('date_reparation');
+        if (datePanneInput) {
+            const today = new Date().toISOString().split('T')[0];
+            datePanneInput.setAttribute('min', today);
+
+            datePanneInput.addEventListener('change', function() {
+                if (this.value > today) {
+                    alert('La date de panne ne peut pas être ultérieure à aujourd\'hui');
+                    this.value = today;
+                }
+            });
+        }
+    });
 </script>
 @yield('scripts')
 @endsection

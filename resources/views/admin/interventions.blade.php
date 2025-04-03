@@ -61,7 +61,8 @@
                                             @if ($emetteur->status=="active")
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Date de la panne</strong></label>
-                                                <input type="date" name="date_panne" class="form-control" required>
+                                                <input type="date" class="form-control" name="date_panne" id="date_panne"
+                                                    max="<?php echo date('Y-m-d'); ?>" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Message</strong></label>
@@ -89,4 +90,20 @@
         </table>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const datePanneInput = document.getElementById('date_panne');
+        if (datePanneInput) {
+            const today = new Date().toISOString().split('T')[0];
+            datePanneInput.setAttribute('max', today);
+
+            datePanneInput.addEventListener('change', function() {
+                if (this.value > today) {
+                    alert('La date de panne ne peut pas être ultérieure à aujourd\'hui');
+                    this.value = today;
+                }
+            });
+        }
+    });
+</script>
 @endsection

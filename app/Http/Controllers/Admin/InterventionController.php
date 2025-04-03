@@ -27,7 +27,7 @@ class InterventionController extends Controller
     {
         // Validation des données envoyées
         $request->validate([
-            'date_panne' => 'required|date',
+            'date_panne' => 'required|date|before_or_equal:today',
             'message' => 'required|string',
             'type_alerte' => 'required|string',
         ]);
