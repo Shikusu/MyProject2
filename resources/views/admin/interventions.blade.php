@@ -77,6 +77,16 @@
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-danger">Déclencher panne</button>
+                                            @else
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Finition</strong></label>
+
+                                                @foreach($interventions as $intervention)
+                                                @if($intervention->emetteur_id == $emetteur->id)
+                                                <p>{{ $intervention->date_reparation_fait}}</p>
+                                                @endif
+                                                @endforeach
+                                            </div>
                                             @endif
                                         </form>
                                     </div>
