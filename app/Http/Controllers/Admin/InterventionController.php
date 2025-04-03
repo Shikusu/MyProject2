@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Emetteur;
 use App\Models\Admin\Alerte;
 use App\Models\Admin\Piece;
+use App\Models\Notification;
 use App\Models\Admin\Intervention;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class InterventionController extends Controller
 {
@@ -44,13 +44,20 @@ class InterventionController extends Controller
         $intervention->type_alerte = $request->type_alerte;
         $intervention->save();
 
-
         //maj emetteur
         $emetteur->panne_declenchee = 1;
         $emetteur->status = 'panne';
         $emetteur->date_panne = $request->date_panne;
         $emetteur->save();
 
+        //creation notif
+        $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est en panne";
+
+
+        $notif = new Notification();
+        $notif->message = $message;
+        $notif->user_id = 1; //mogik to be changet
+        $notif->save();
 
         // Redirection avec un message de succès
         return redirect()->route('admin.interventions.index')->with('success', 'Panne déclenchée avec succès.');

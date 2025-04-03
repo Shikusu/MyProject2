@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Alerte;
 use App\Models\Admin\Emetteur;
 use App\Models\Admin\Intervention;
+use App\Models\Notification;
 use App\Models\Admin\Piece;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -16,7 +17,21 @@ class TechnicianController extends Controller
     public function dashboard()
     {
         $nombreEmetteurs = Emetteur::count();
-        return view('technicien.dashboard', compact('nombreEmetteurs'));
+        $notifs = Notification::where('user_id', 1)->get();
+
+        return view('technicien.dashboard', compact('nombreEmetteurs'), compact('notifs'));
+    }
+
+
+    public function markAsRead($id)
+    {
+        $notif = Notification::find($id);
+        if ($notif && $notif->est_lu == 0) {
+            $notif->est_lu = 1;
+            $notif->save();
+        }
+
+        return response()->json(['success' => true]);
     }
 
     public function emetteurs()

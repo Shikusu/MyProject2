@@ -9,6 +9,7 @@ use App\Models\Admin\Emetteur;
 use App\Notifications\AlertePanneNotification;
 use Illuminate\Http\Request;
 
+
 class AlerteController extends Controller
 {
     // Afficher les alertes avec pagination de 5 par page

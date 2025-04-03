@@ -77,3 +77,4 @@ Route::middleware(['auth', 'role:technicien'])->prefix('technicien')->name('tech
 });
 Route::post('/interventions/{id}/lancement-reparation', [InterventionController::class, 'lancementReparation'])
     ->name('admin.interventions.lancementReparation');
+Route::post('/notifications/mark-as-read/{id}', [TechnicianController::class, 'markAsRead']);

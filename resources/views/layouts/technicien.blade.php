@@ -74,6 +74,36 @@
                     <h2 class="m-0 fs-2">@yield('title', 'Dashboard Technicien')</h2>
                 </div>
                 <div class="d-flex align-items-center">
+                    <!-- Dropdown Button -->
+                    @isset($notifs)
+                    <div class="dropdown ms-3">
+                        <button class="btn btn-secondary dropdown-toggle position-relative rounded-circle"
+                            type="button" id="messageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-envelope"></i>
+                            @if($notifs->where('est_lu', 0)->count() > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ $notifs->where('est_lu', 0)->count() }}
+                            </span>
+                            @endif
+                        </button>
+
+                        <ul class="dropdown-menu" aria-labelledby="messageDropdown" id="messageDropdownMenu">
+                            @foreach($notifs as $notif)
+
+                            <li>
+
+                                <a class="dropdown-item {{ $notif->est_vu == 0 ? 'fw-bold' : '' }}"
+                                    href="{{ route('technicien.historiques') }}"
+                                    data-id="{{ $notif->id }}"
+                                    onclick="markAsRead(this)">
+                                    {{$notif->message}}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+
+                    </div>
+                    @endisset
                     <i class="bi bi-person-circle me-2"></i>
                     <span class="fw-bold">Bonjour, {{ Auth::user()->name }}</span>
                 </div>
@@ -107,7 +137,30 @@
                     }
                 });
             });
+
+            const dropdownButton = document.getElementById('messageDropdown');
+            const dropdownMenu = document.getElementById('messageDropdownMenu');
+
+
         });
+
+        function markAsRead(element) {
+            let notifId = element.getAttribute("data-id");
+
+            fetch('/notifications/mark-as-read/' + notifId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                }).catch(error => console.error('Erreur:', error));
+        }
     </script>
     @yield('scripts')
 </body>
