@@ -93,7 +93,7 @@
                             <li>
 
                                 <a class="dropdown-item {{ $notif->est_vu == 0 ? 'fw-bold' : '' }}"
-                                    href="{{ route('technicien.historiques') }}"
+                                    href="{{ route('technicien.historiques')}}"
                                     data-id="{{ $notif->id }}"
                                     onclick="markAsRead(this)">
                                     {{$notif->message}}
@@ -156,9 +156,7 @@
                     body: JSON.stringify({})
                 }).then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    }
+                    pass; //lol
                 }).catch(error => console.error('Erreur:', error));
         }
     </script>
