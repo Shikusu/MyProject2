@@ -145,15 +145,6 @@
                             </li>
                             @endif
 
-                            <!-- View All Link -->
-                            @if($notifs->where('est_lu', 0)->count() > 0)
-                            <div class="dropdown-divider m-0"></div>
-                            <li>
-                                <a class="dropdown-item text-center py-2 text-primary small" href="{{ route('technicien.historiques') }}">
-                                    Voir toutes les notifications
-                                </a>
-                            </li>
-                            @endif
                         </ul>
                     </div>
                     @endisset

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Admin\Emetteur;
+use App\Models\Notification;
 use Illuminate\Console\Command;
 use App\Models\Admin\Intervention;
 use Carbon\Carbon;
@@ -29,8 +30,17 @@ class UpdateStatusCommand extends Command
                 $emetteur->status = 'active';
                 $emetteur->save();
                 $updatedCount++;
+                $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est reparée";
+
+
+                $notif = new Notification();
+                $notif->message = $message;
+                $notif->user_id = 2; //logik to be changet
+                $notif->save();
             }
         }
+
+
 
         $this->info("Updated {$updatedCount} emetteur statuses to 'active'.");
     }

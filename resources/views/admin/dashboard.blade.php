@@ -24,16 +24,21 @@
         }
 
         .card:hover {
-            transform: scale(1.05); /* Léger agrandissement */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Ajout d'une ombre légère */
+            transform: scale(1.05);
+            /* Léger agrandissement */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            /* Ajout d'une ombre légère */
         }
 
         a {
-            text-decoration: none; /* Supprime le soulignement du texte */
+            text-decoration: none;
+            /* Supprime le soulignement du texte */
         }
 
-        .card-header, .card-body {
-            user-select: none; /* Empêche la sélection de texte */
+        .card-header,
+        .card-body {
+            user-select: none;
+            /* Empêche la sélection de texte */
         }
     </style>
 
@@ -91,11 +96,87 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="d-flex align-items-center">
+                        <!-- Enhanced Notification Dropdown -->
+                        @isset($notifs)
+                        <div class="dropdown ms-3 me-3">
+                            <button class="btn btn-light btn-sm position-relative rounded-circle shadow-sm p-2"
+                                type="button" id="messageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-envelope fs-5 text-primary"></i>
+                                @if($notifs->where('est_lu', 0)->count() > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ $notifs->where('est_lu', 0)->count() }}
+                                    <span class="visually-hidden">messages non lus</span>
+                                </span>
+                                @endif
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-0"
+                                aria-labelledby="messageDropdown"
+                                id="messageDropdownMenu"
+                                style="min-width: 280px; max-height: 350px; overflow-y: auto;">
+
+                                <!-- Notification Header -->
+                                <li class="dropdown-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-primary">Notifications</span>
+                                    @if($notifs->where('est_lu', 0)->count() > 0)
+                                    <span class="badge bg-primary rounded-pill">{{ $notifs->where('est_lu', 0)->count() }}</span>
+                                    @endif
+                                </li>
+
+                                <div class="dropdown-divider m-0"></div>
+
+                                <!-- Notifications List -->
+                                @if(count($notifs) > 0)
+                                @php $hasUnread = false; @endphp
+
+                                @foreach($notifs as $notif)
+                                @if($notif->est_lu != 1)
+                                @php $hasUnread = true; @endphp
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 d-flex align-items-center {{ $notif->est_vu == 0 ? 'bg-light' : '' }}"
+                                        href="{{ route('admin.interventions.index') }}"
+                                        data-id="{{ $notif->id }}"
+                                        onclick="markAsRead(this)">
+                                        <div class="me-2">
+                                            <i class="bi bi-info-circle{{ $notif->est_vu == 0 ? '-fill text-primary' : ' text-secondary' }}"></i>
+                                        </div>
+                                        <div class="{{ $notif->est_vu == 0 ? 'fw-bold' : 'text-muted' }}">
+                                            {{ $notif->message }}
+                                            <div class="small text-muted mt-1">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <div class="dropdown-divider m-0"></div>
+                                @endif
+                                @endforeach
+
+                                @if(!$hasUnread)
+                                <li>
+                                    <div class="dropdown-item text-center py-3 text-muted">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Aucune notification
+                                    </div>
+                                </li>
+                                @endif
+                                @else
+                                <li>
+                                    <div class="dropdown-item text-center py-3 text-muted">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Aucune notification
+                                    </div>
+                                </li>
+                                @endif
+
+                            </ul>
+                        </div>
+                        @endisset
+                    </div>
                     <ul class="mb-2 navbar-nav ms-auto mb-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle second-text fw-bold" href="#" id="navbarDropdown"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user me-2"></i> {{ Auth::check() ? Auth::user()->name : 'John Doe' }}
+                                <i class="fas fa-user me-2"></i> {{ Auth::check() ? Auth::user()->name : 'Error' }}
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -157,6 +238,22 @@
         toggleButton.onclick = function() {
             el.classList.toggle("toggled");
         };
+
+        function markAsRead(element) {
+            let notifId = element.getAttribute("data-id");
+
+            fetch('/notifications/mark-as-read/' + notifId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                }).then(response => response.json())
+                .then(data => {
+                    pass; //lol
+                }).catch(error => console.error('Erreur:', error));
+        }
     </script>
 </body>
 

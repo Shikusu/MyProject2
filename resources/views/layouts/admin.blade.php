@@ -87,7 +87,7 @@
                 cancelButtonText: 'Annuler'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('logout-form').submit();  // Soumettre le formulaire de déconnexion
+                    document.getElementById('logout-form').submit(); // Soumettre le formulaire de déconnexion
                 }
             });
         });
@@ -96,6 +96,3 @@
 </body>
 
 </html>
-
-
-

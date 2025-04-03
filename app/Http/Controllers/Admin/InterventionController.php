@@ -19,7 +19,6 @@ class InterventionController extends Controller
         $alertesTypes = Alerte::distinct()->pluck('type', 'type');
         $interventions = Intervention::whereNull('date_reparation')->get();
 
-
         return view('admin.interventions', compact('emetteurs', 'alertesTypes', 'interventions'));
     }
 
@@ -81,6 +80,14 @@ class InterventionController extends Controller
         $intervention->date_reparation = $request->date_reparation;
 
         $emetteur->status = 'En cours de réparation';
+
+        $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est en cours de réparation";
+
+
+        $notif = new Notification();
+        $notif->message = $message;
+        $notif->user_id = 2; //logik to be changet
+        $notif->save();
 
         $intervention->date_reparation_fait = $request->date_reparation_fait;
         $intervention->save();
