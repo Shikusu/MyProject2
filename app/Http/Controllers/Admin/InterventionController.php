@@ -22,6 +22,7 @@ class InterventionController extends Controller
         return view('admin.interventions', compact('emetteurs', 'alertesTypes', 'interventions'));
     }
 
+
     // Déclencher une alerte pour une panne
     public function declencherPanne(Request $request, $emetteurId)
     {
