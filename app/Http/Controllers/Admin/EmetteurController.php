@@ -55,13 +55,15 @@ class EmetteurController extends Controller
     // Affichage du formulaire d'édition
     public function edit($id)
     {
+
+        $emetteurs = Emetteur::with('localisation')->paginate(10);
         // Récupérer l'émetteur avec la localisation associée
         $emetteur = Emetteur::with('localisation')->findOrFail($id);
 
         // Récupère toutes les localisations
         $localisations = Localisation::all();
 
-        return view('admin.emetteurs', compact('emetteur', 'localisations'));
+        return view('admin.emetteurs', compact('emetteur', 'localisations', 'emetteurs'));
     }
 
     // Mise à jour d'un émetteur
