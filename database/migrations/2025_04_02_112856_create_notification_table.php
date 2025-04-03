@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('message');
             $table->timestamps();
 
-            $table->foreign('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
         });
     }
 
