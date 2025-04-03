@@ -88,18 +88,29 @@
                         </button>
 
                         <ul class="dropdown-menu" aria-labelledby="messageDropdown" id="messageDropdownMenu">
+                            @if(count($notifs) > 0)
+                            @php $hasUnread = false; @endphp
+
                             @foreach($notifs as $notif)
-
+                            @if($notif->est_lu != 1)
+                            @php $hasUnread = true; @endphp
                             <li>
-
                                 <a class="dropdown-item {{ $notif->est_vu == 0 ? 'fw-bold' : '' }}"
-                                    href="{{ route('technicien.historiques')}}"
+                                    href="{{ route('technicien.historiques') }}"
                                     data-id="{{ $notif->id }}"
                                     onclick="markAsRead(this)">
-                                    {{$notif->message}}
+                                    {{ $notif->message }}
                                 </a>
                             </li>
+                            @endif
                             @endforeach
+
+                            @if(!$hasUnread)
+                            <li>Aucune notification</li>
+                            @endif
+                            @else
+                            <li>Aucune notification</li>
+                            @endif
                         </ul>
 
                     </div>
