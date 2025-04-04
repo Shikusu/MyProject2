@@ -8,6 +8,7 @@ use App\Models\Admin\Alerte;
 use App\Models\Admin\Piece;
 use App\Models\Notification;
 use App\Models\Admin\Intervention;
+use App\Models\Admin\InterventionPiece;
 use Illuminate\Http\Request;
 
 class InterventionController extends Controller
@@ -65,45 +66,44 @@ class InterventionController extends Controller
 
     public function lancementReparation(Request $request, $id)
     {
-        // Validate input
         $request->validate([
             'date_reparation' => 'required|date',
             'date_reparation_fait' => 'required|date',
+            'pieces' => 'nullable|array',
+            'pieces.*.id' => 'exists:pieces,id',
+            'pieces.*.quantite' => 'integer|min:1',
         ]);
 
-        // Find the intervention by ID
         $intervention = Intervention::findOrFail($id);
         $emetteur = Emetteur::findOrFail($intervention->emetteur_id);
+
         if (!$emetteur) {
-            return response()->json(['error' => 'Intervention not found'], 404);
+            return response()->json(['error' => 'Émetteur introuvable.'], 404);
         }
-        // Update fields
-        $intervention->date_reparation = $request->date_reparation;
-
-        $emetteur->status = 'En cours de réparation';
-        $emetteur->maintenance_prevue    = $request->date_reparation;
-
-        $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est en cours de réparation";
-
-
-        $notif = new Notification();
-        $notif->message = $message;
-        $notif->user_id = 2; //logik to be changet
-        $notif->save();
-
-        $intervention->date_reparation_fait = $request->date_reparation_fait;
-        $intervention->save();
-        $emetteur->save();
 
         if ($request->has('pieces')) {
-            $pieceIds = [];
-            foreach ($request->pieces as $pieceName) {
-                $piece = Piece::firstOrCreate(['nom' => $pieceName]);
-                $pieceIds[] = $piece->id;
-            }
+            foreach ($request->pieces as $pieceData) {
+                $piece = Piece::findOrFail($pieceData['id']);
 
-            $intervention->pieces()->sync($pieceIds);
+                if ($piece->quantite < $pieceData['quantite']) {
+                    return response()->json([
+                        'error' => "Stock insuffisant pour la piece: {$piece->nom}.\n Disponible: {$piece->quantite}\n Demande: {$pieceData['quantite']}"
+                    ], 400);
+                }
+
+                $piece->quantite -= $pieceData['quantite'];
+                $piece->save();
+                $Inter_piece = new InterventionPiece();
+                $Inter_piece->intervention_id = $id;
+                $Inter_piece->piece_id = $pieceData['id'];
+                $Inter_piece->save();
+            }
         }
-        return response()->json(['success' => true, 'message' => 'Réparation et pièces enregistrées avec succès.']);
+
+        $intervention->date_reparation = $request->date_reparation;
+        $intervention->date_reparation_fait = $request->date_reparation_fait;
+        $intervention->save();
+
+        return response()->json(['message' => 'Réparation enregistrée avec succès.']);
     }
 }

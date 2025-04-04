@@ -168,9 +168,17 @@
     document.getElementById('saveRepair').addEventListener('click', function() {
         let interventionId = this.getAttribute('data-id');
         let dateReparation = document.getElementById('date_reparation').value;
-        let dateReparationFait = new Date().toISOString().split('T')[0]; // Auto-fill today's date
-        let pieces = Array.from(document.querySelectorAll('.piece-input')).map(input => input.value.trim()).filter(piece => piece !== "");
+        let dateReparationFait = new Date().toISOString().split('T')[0];
+        let pieces = Array.from(document.querySelectorAll('.piece-select')).map(select => {
+            let pieceId = select.value;
+            let quantityInput = select.closest('.input-group').querySelector('.piece-quantite');
+            let quantity = quantityInput ? quantityInput.value : 1;
 
+            return pieceId ? {
+                id: pieceId,
+                quantite: quantity
+            } : null;
+        }).filter(piece => piece !== null);
         if (!dateReparation) {
             alert("Veuillez sélectionner une date de réparation.");
             return;
@@ -191,9 +199,19 @@
             .then(response => {
                 if (!response.ok) {
                     return response.text().then(text => {
-                        throw new Error(text);
+                        try {
+                            let errorObj = JSON.parse(text);
+                            if (errorObj.error) {
+                                alert(errorObj.error);
+                            } else {
+                                alert("Une erreur est survenue.");
+                            }
+                        } catch (e) {
+                            alert(text.replace(/[{}"\[\]]/g, '').replace(/[:,]/g, ' ')); // Remove brackets & symbols
+                        }
                     });
                 }
+
                 return response.json();
             })
             .then(data => {
