@@ -30,7 +30,7 @@
                             <td>{{ $emetteur->type }}</td>
                             <td>{{ $emetteur->date_installation }}</td>
                             <td>{{ $emetteur->dernier_maintenance }}</td>
-                            <td>{{ $emetteur->maintenance_prevue }}</td>
+                            <td>{{ $emetteur->maintenance_prevue!=null ?$emetteur->maintenance_prevue :"------" }}</td>
                             <td>
                                 @if ($emetteur->status == 'active')
                                 <span class="badge bg-success">Actif</span>

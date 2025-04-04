@@ -30,7 +30,7 @@ class PieceController extends Controller
     }
 
     // ✅ Ajouter ou modifier une pièce (fonction unique)
-    public function storeOrUpdate(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'nom' => 'required|string|max:15',
