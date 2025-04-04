@@ -53,8 +53,9 @@ class PieceController extends Controller
     // ✅ Formulaire de modification d'une pièce
     public function edit($id)
     {
+        $pieces = Piece::paginate(5);
         $piece = Piece::findOrFail($id);
-        return view('admin.pieces', compact('piece'));
+        return view('admin.pieces', compact('piece', 'pieces'));
     }
 
     // ✅ Suppression d'une pièce

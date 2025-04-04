@@ -38,8 +38,10 @@ class LocalisationController extends Controller
     // Affiche le formulaire d'édition pour une localisation existante
     public function edit($id)
     {
+
+        $localisations = Localisation::paginate(10);
         $localisation = Localisation::findOrFail($id);
-        return view('admin.localisations', compact('localisation'));
+        return view('admin.localisations', compact('localisation', 'localisations'));
     }
 
     // Met à jour une localisation existante
