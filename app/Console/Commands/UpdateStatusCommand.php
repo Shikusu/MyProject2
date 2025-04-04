@@ -28,6 +28,8 @@ class UpdateStatusCommand extends Command
 
             if ($emetteur && $emetteur->status === 'En cours de réparation') {
                 $emetteur->status = 'active';
+                $emetteur->dernier_maintenance  = $emetteur->maintenance_prevue;
+                $emetteur->maintenance_prevue = null;
                 $emetteur->save();
                 $updatedCount++;
                 $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est reparée";

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Technicien;
 
 use App\Models\Admin\Emetteur;
+
+use App\Models\Admin\Intervention;
 use App\Models\Admin\Alerte;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,15 +21,17 @@ class TechnicianEmetteurController extends Controller
     {
         // Récupérer tous les émetteurs avec leur localisation associée
         $emetteurs = Emetteur::with('localisation')->get();
-
         // Compter les alertes non lues pour le technicien
         $user = Auth::user();
         $notificationsCount = Alerte::where('technicien_id', $user->id)
-                                     ->where('status', 'non_lue')
-                                     ->count(); // Compter les alertes non lues
+            ->where('status', 'non_lue')
+            ->count(); // Compter les alertes non lues
+
+        $interventions = Intervention::with('emetteur')
+            ->get();
 
         // Retourner la vue avec les émetteurs et le compteur d'alertes non lues
-        return view('technicien.emetteurs', compact('emetteurs', 'notificationsCount'));
+        return view('technicien.emetteurs', compact('emetteurs', 'notificationsCount', 'interventions'));
     }
 
     /**
@@ -47,8 +51,8 @@ class TechnicianEmetteurController extends Controller
 
         // Récupérer les alertes non lues pour le technicien
         $alertes = Alerte::where('technicien_id', $user->id)
-                         ->where('status', 'non_lue')
-                         ->get();
+            ->where('status', 'non_lue')
+            ->get();
 
         // Retourner la vue avec les alertes
         return view('technicien.alertes', compact('alertes'));

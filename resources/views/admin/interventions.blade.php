@@ -54,10 +54,6 @@
                                                 <label class="form-label"><strong>Dernière maintenance</strong></label>
                                                 <p>{{ $emetteur->dernier_maintenance }}</p>
                                             </div>
-                                            <div class="mb-3">
-                                                <label class="form-label"><strong>Maintenance prévue</strong></label>
-                                                <p>{{ $emetteur->maintenance_prevue }}</p>
-                                            </div>
                                             @if ($emetteur->status=="active")
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Date de la panne</strong></label>
@@ -79,13 +75,8 @@
                                             <button type="submit" class="btn btn-danger">Déclencher panne</button>
                                             @else
                                             <div class="mb-3">
-                                                <label class="form-label"><strong>Finition</strong></label>
-
-                                                @foreach($interventions as $intervention)
-                                                @if($intervention->emetteur_id == $emetteur->id)
-                                                <p>{{ $intervention->date_reparation_fait}}</p>
-                                                @endif
-                                                @endforeach
+                                                <label class="form-label"><strong>Maintenance prévue</strong></label>
+                                                <p>{{ $emetteur->maintenance_prevue}}</p>
                                             </div>
                                             @endif
                                         </form>

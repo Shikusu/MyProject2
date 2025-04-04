@@ -81,6 +81,7 @@ class InterventionController extends Controller
         $intervention->date_reparation = $request->date_reparation;
 
         $emetteur->status = 'En cours de réparation';
+        $emetteur->maintenance_prevue    = $request->date_reparation;
 
         $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est en cours de réparation";
 
