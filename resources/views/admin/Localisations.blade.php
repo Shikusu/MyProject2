@@ -34,7 +34,7 @@
     <div class="mt-4 row justify-content-center">
         <!-- Form Section -->
         <div class="col-md-4">
-            <div class="card shadow-sm custom-card border-0">
+            <div class="border-0 shadow-sm card custom-card">
                 <div class="card-body">
                     <h4 class="mb-4" style="color: #00703C;">
                         {{ isset($localisation) ? 'Modifier la localisation' : 'Ajouter une localisation' }}
@@ -71,7 +71,7 @@
 
         <!-- List Section -->
         <div class="col-md-8">
-            <div class="card shadow-sm custom-card border-0">
+            <div class="border-0 shadow-sm card custom-card">
                 <div class="card-body">
                     <h4 class="mb-4" style="color: #003366;">Liste des localisations</h4>
                     <div id="localisationsList">
@@ -93,7 +93,7 @@
                                         </a>
                                         <form action="{{ route('admin.localisations.destroy', $localisation->id) }}"
                                             method="POST"
-                                            class="d-inline">
+                                            class="d-inline delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm delete-btn">
@@ -119,12 +119,10 @@
     </div>
 </div>
 
-<!-- JavaScript -->
+<!-- ✅ SweetAlert pour succès -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let successMessage = "{{ session('success') }}";
-    let errorMessage = "{{ $errors->first('nom') }}";
-
     if (successMessage) {
         Swal.fire({
             icon: 'success',
@@ -133,14 +131,32 @@
             timer: 1500
         });
     }
+</script>
 
-    if (errorMessage) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Erreur',
-            text: errorMessage,
-            showConfirmButton: true
+<!-- ✅ SweetAlert pour confirmation de suppression -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteForms = document.querySelectorAll('.delete-form');
+
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Êtes-vous sûr ?',
+                    text: "Cette action est irréversible !",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Supprimer',
+                    cancelButtonText: 'Annuler'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
         });
-    }
+    });
 </script>
 @endsection

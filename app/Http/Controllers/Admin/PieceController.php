@@ -47,7 +47,9 @@ class PieceController extends Controller
 
         $piece->save();
 
-        return redirect()->route('admin.pieces.index')->with('success', 'Pièce enregistrée avec succès.');
+        // Retour avec SweetAlert après succès
+        return redirect()->route('admin.pieces.index')
+            ->with('success', isset($request->id) ? 'Pièce modifiée avec succès.' : 'Pièce ajoutée avec succès.');
     }
 
     // ✅ Formulaire de modification d'une pièce
@@ -56,6 +58,31 @@ class PieceController extends Controller
         $pieces = Piece::paginate(5);
         $piece = Piece::findOrFail($id);
         return view('admin.pieces', compact('piece', 'pieces'));
+    }
+
+    // ✅ Mise à jour d'une pièce (modification)
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'nom' => 'required|string|max:15',
+            'type' => 'required|string|max:15',
+            'quantite' => 'required|integer|min:1',
+        ]);
+
+        // Trouver la pièce à modifier
+        $piece = Piece::findOrFail($id);
+
+        // Mise à jour des informations de la pièce
+        $piece->nom = $validated['nom'];
+        $piece->type = $validated['type'];
+        $piece->quantite = $validated['quantite'];
+
+        // Sauvegarde des modifications
+        $piece->save();
+
+        // Retour avec SweetAlert après succès
+        return redirect()->route('admin.pieces.index')
+            ->with('success', 'Pièce modifiée avec succès.');
     }
 
     // ✅ Suppression d'une pièce

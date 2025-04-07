@@ -25,7 +25,10 @@ class LocalisationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nom' => 'required|string|max:255',
+            'nom' => 'required|string|max:255|unique:localisations,nom',
+        ], [
+            'nom.unique' => 'Cette localisation existe déjà.',
+            'nom.required' => 'Le nom de la localisation est obligatoire.',
         ]);
 
         Localisation::create([
@@ -38,7 +41,6 @@ class LocalisationController extends Controller
     // Affiche le formulaire d'édition pour une localisation existante
     public function edit($id)
     {
-
         $localisations = Localisation::paginate(10);
         $localisation = Localisation::findOrFail($id);
         return view('admin.localisations', compact('localisation', 'localisations'));
@@ -47,11 +49,15 @@ class LocalisationController extends Controller
     // Met à jour une localisation existante
     public function update(Request $request, $id)
     {
+        $localisation = Localisation::findOrFail($id);
+
         $request->validate([
-            'nom' => 'required|string|max:255',
+            'nom' => 'required|string|max:255|unique:localisations,nom,' . $localisation->id,
+        ], [
+            'nom.unique' => 'Cette localisation existe déjà.',
+            'nom.required' => 'Le nom de la localisation est obligatoire.',
         ]);
 
-        $localisation = Localisation::findOrFail($id);
         $localisation->nom = $request->input('nom');
         $localisation->save();
 

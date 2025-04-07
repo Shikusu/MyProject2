@@ -54,29 +54,34 @@
                     </h4>
                     <form action="{{ isset($piece) ? route('admin.pieces.update', $piece->id) : route('admin.pieces.store') }}" method="POST">
                         @csrf
-                        @if (isset($piece))
-                        @method('PUT')
+                        @if(isset($piece))
+                            @method('PUT') <!-- Utilisation de PUT pour la mise à jour -->
                         @endif
+
+                        <!-- Champ Nom de la pièce -->
                         <div class="mb-3">
                             <label class="form-label">Nom de la pièce</label>
                             <input type="text" name="nom" class="form-control" placeholder="Nom de la pièce" required value="{{ old('nom', $piece->nom ?? '') }}">
                         </div>
+
+                        <!-- Champ Type de pièce -->
                         <div class="mb-3">
                             <label class="form-label">Type de pièce</label>
                             <input type="text" name="type" class="form-control" placeholder="Type de la pièce" required value="{{ old('type', $piece->type ?? '') }}">
                         </div>
+
+                        <!-- Champ Quantité -->
                         <div class="mb-3">
                             <label class="form-label">Quantité</label>
                             <input type="number" name="quantite" class="form-control" placeholder="Quantité" required value="{{ old('quantite', $piece->quantite ?? 1) }}" min="1">
                         </div>
+
+                        <!-- Bouton de soumission -->
                         <button type="submit" class="btn {{ isset($piece) ? 'btn-success' : 'btn-primary' }} w-100">
-                            @if (isset($piece))
-                            Modifier
-                            @else
-                            Ajouter
-                            @endif
+                            {{ isset($piece) ? 'Modifier' : 'Ajouter' }}
                         </button>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -130,20 +135,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+
 <script>
-    if (session('success')) {
-        const val = session('success');
+    @if (session('success'))
         Swal.fire({
             icon: 'success',
-            title: '<h5 style="font-size: 16px;">' + val + '</h5>',
+            title: '<h5>{{ session('success') }}</h5>',
             showConfirmButton: false,
             timer: 1500
         });
-
-    }
-
-
+    @endif
 
     function confirmDelete(event) {
         event.preventDefault();

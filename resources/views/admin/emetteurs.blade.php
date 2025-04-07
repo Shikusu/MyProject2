@@ -3,39 +3,6 @@
 @section('title', 'Gestion des Émetteurs')
 
 @section('content')
-<style>
-    .pagination {
-        justify-content: center;
-    }
-
-    .pagination .page-link {
-        padding: 4px 8px;
-        font-size: 16px;
-        border: 1px solid #007BFF;
-        color: #007BFF;
-    }
-
-    .pagination .page-item.active .page-link {
-        background-color: #007BFF;
-        border-color: #007BFF;
-        color: white;
-    }
-
-    .pagination .page-link:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-        color: white;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-control {
-        margin-bottom: 15px;
-    }
-</style>
-
 <div class="container mt-4">
     <h1 class="text-center" style="font-size: 2.5rem; color: #00703C;">Gestion des Émetteurs</h1>
 
@@ -213,3 +180,42 @@
 </script>
 
 @endsection
+
+<style>
+    .pagination {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.pagination .page-item {
+    margin: 0 3px !important;
+}
+
+.pagination .page-link {
+    border-radius: 50% !important;
+    padding: 8px 14px !important;
+    background-color: #f8f9fa !important;
+    color: #007BFF !important;
+    border: 1px solid #007BFF !important;
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.pagination .page-link:hover {
+    background-color: #007BFF !important;
+    color: white !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007BFF !important;
+    color: white !important;
+    border-color: #007BFF !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+    border-color: #e9ecef !important;
+}
+
+</style>
