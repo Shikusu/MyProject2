@@ -2,7 +2,10 @@
 
 @section('title', 'Gestion des Pièces')
 
-@section('content')
+@section('page-title', 'Gestion des Pièces')
+
+
+@section('contenu')
 <style>
     /* Style pour la pagination */
     .pagination {
@@ -55,7 +58,7 @@
                     <form action="{{ isset($piece) ? route('admin.pieces.update', $piece->id) : route('admin.pieces.store') }}" method="POST">
                         @csrf
                         @if(isset($piece))
-                            @method('PUT') <!-- Utilisation de PUT pour la mise à jour -->
+                        @method('PUT') <!-- Utilisation de PUT pour la mise à jour -->
                         @endif
 
                         <!-- Champ Nom de la pièce -->
@@ -137,13 +140,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    @if (session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: '<h5>{{ session('success') }}</h5>',
-            showConfirmButton: false,
-            timer: 1500
-        });
+    @if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: '<h5>{{ session('
+        success ') }}</h5>',
+        showConfirmButton: false,
+        timer: 1500
+    });
     @endif
 
     function confirmDelete(event) {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Emetteur;
 use App\Models\Admin\Localisation; // Ajouter le modèle Localisation
 use Illuminate\Http\Request;
+use App\Models\Notification;
 
 class EmetteurController extends Controller
 {
@@ -14,11 +15,11 @@ class EmetteurController extends Controller
     {
         // Récupère toutes les localisations
         $localisations = Localisation::all();
-
+        $notifs = Notification::where('user_id', 2)->get();
         // Récupère les émetteurs avec leur localisation associée via une relation
         $emetteurs = Emetteur::with('localisation')->paginate(10);
 
-        return view('admin.emetteurs', compact('localisations', 'emetteurs'));
+        return view('admin.emetteurs', compact('localisations', 'emetteurs', 'notifs'));
     }
 
     // Affichage du formulaire d'ajout

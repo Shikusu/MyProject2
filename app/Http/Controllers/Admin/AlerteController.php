@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Alerte;
 use App\Models\User;
 use App\Models\Admin\Emetteur;
-use App\Notifications\AlertePanneNotification;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 
 
@@ -16,7 +16,8 @@ class AlerteController extends Controller
     public function index()
     {
         $alertes = Alerte::paginate(5);
-        return view('admin.alertes', compact('alertes'));
+        $notifs = Notification::where('user_id', 2)->get();
+        return view('admin.alertes', compact('alertes', 'notifs'));
     }
 
     // Ajouter une nouvelle alerte

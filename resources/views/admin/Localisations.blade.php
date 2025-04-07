@@ -2,7 +2,9 @@
 
 @section('title', 'Gestion des Localisations')
 
-@section('content')
+@section('page-title', 'Gestion des Localisations')
+
+@section('contenu')
 <style>
     .pagination {
         justify-content: center;
@@ -135,11 +137,11 @@
 
 <!-- ✅ SweetAlert pour confirmation de suppression -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const deleteForms = document.querySelectorAll('.delete-form');
 
         deleteForms.forEach(form => {
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 Swal.fire({
                     title: 'Êtes-vous sûr ?',

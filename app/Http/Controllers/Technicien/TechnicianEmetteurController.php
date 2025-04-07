@@ -7,6 +7,7 @@ use App\Models\Admin\Emetteur;
 use App\Models\Admin\Intervention;
 use App\Models\Admin\Alerte;
 use Illuminate\Http\Request;
+use App\Models\Notification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +20,8 @@ class TechnicianEmetteurController extends Controller
      */
     public function index()
     {
+
+
         // Récupérer tous les émetteurs avec leur localisation associée
         $emetteurs = Emetteur::with('localisation')->get();
         // Compter les alertes non lues pour le technicien
@@ -26,12 +29,13 @@ class TechnicianEmetteurController extends Controller
         $notificationsCount = Alerte::where('technicien_id', $user->id)
             ->where('status', 'non_lue')
             ->count(); // Compter les alertes non lues
-
         $interventions = Intervention::with('emetteur')
+            ->get();
+        $notifs = Intervention::with('emetteur')
             ->get();
 
         // Retourner la vue avec les émetteurs et le compteur d'alertes non lues
-        return view('technicien.emetteurs', compact('emetteurs', 'notificationsCount', 'interventions'));
+        return view('technicien.emetteurs', compact('emetteurs', 'notificationsCount', 'interventions', 'notifs'));
     }
 
     /**
@@ -46,7 +50,7 @@ class TechnicianEmetteurController extends Controller
 
         if (!$user) {
             // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
-            return redirect()->route('login.form')->with('error', 'Vous devez être connecté pour accéder à cette page.');
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
 
         // Récupérer les alertes non lues pour le technicien
@@ -71,7 +75,7 @@ class TechnicianEmetteurController extends Controller
 
         if (!$user) {
             // Rediriger si l'utilisateur n'est pas authentifié
-            return redirect()->route('login.form')->with('error', 'Vous devez être connecté pour accéder à cette page.');
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
 
         // Trouver l'alerte par son ID
@@ -100,8 +104,8 @@ class TechnicianEmetteurController extends Controller
     {
         // Trouver l'émetteur par son ID
         $emetteur = Emetteur::with('localisation')->findOrFail($emetteurId);
-
+        $notifs = Notification::where('user_id', 1)->get();
         // Retourner la vue avec les détails de l'émetteur
-        return view('technicien.emetteur_details', compact('emetteur'));
+        return view('technicien.emetteur_details', compact('emetteur', 'notifs'));
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Piece;
+use App\Models\Notification;
+
 use Illuminate\Http\Request;
 
 class PieceController extends Controller
@@ -15,7 +17,7 @@ class PieceController extends Controller
 
         // Début de la requête sur la table Piece
         $piecesQuery = Piece::query();
-
+        $notifs = Notification::where('user_id', 2)->get();
         // Si une recherche est faite, on filtre les résultats
         if ($searchQuery) {
             $piecesQuery->where('nom', 'like', '%' . $searchQuery . '%')
@@ -26,7 +28,7 @@ class PieceController extends Controller
         $pieces = $piecesQuery->paginate(5);
 
         // Retour de la vue avec les pièces et la recherche courante
-        return view('admin.pieces', compact('pieces', 'searchQuery'));
+        return view('admin.pieces', compact('pieces', 'searchQuery', 'notifs'));
     }
 
     // ✅ Ajouter ou modifier une pièce (fonction unique)

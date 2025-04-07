@@ -1,5 +1,8 @@
 @extends('layouts.technicien')
 
+@section('title', 'Historique')
+
+
 @section('content')
 <div class="container mt-4">
     <h2 class="mb-4">Historique des Interventions</h2>

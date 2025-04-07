@@ -34,7 +34,7 @@ class AuthController extends Controller
             return match (Auth::user()->role) {
                 'admin' => redirect()->route('admin.dashboard'),
                 'technicien' => redirect()->route('technicien.dashboard'),
-                default => redirect()->route('login.form'),
+                default => redirect()->route('login'),
             };
         }
 
@@ -46,11 +46,11 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout(); // Déconnexion de l'utilisateur
+        Auth::logout();
 
-        $request->session()->invalidate(); // Invalider la session
-        $request->session()->regenerateToken(); // Générer un nouveau token CSRF
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return redirect()->route('login.form')->with('success', 'Déconnexion réussie.');
+        return redirect()->route('login')->with('success', 'Vous avez été déconnecté avec succès');
     }
 }

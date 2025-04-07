@@ -1,6 +1,11 @@
 @extends('layouts.admin')
 
-@section('content')
+
+@section('title', 'Gestion des Alertes')
+
+@section('page-title', 'Gestion des Alertes')
+
+@section('contenu')
 <div class="container">
     <h2>Gestion des Alertes</h2>
     <div class="row">

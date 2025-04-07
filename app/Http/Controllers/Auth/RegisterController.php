@@ -46,6 +46,6 @@ class RegisterController extends Controller
         $user->role = $request->role;
         $user->save(); // Sauvegarde dans la base de données
 
-        return redirect()->route('login.form')->with('success', 'Inscription réussie !');
+        return redirect()->route('login')->with('success', 'Inscription réussie !');
     }
 }

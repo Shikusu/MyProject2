@@ -1,13 +1,15 @@
 <?php
+
 namespace App\Http;
 
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
     protected $routeMiddleware = [
-        // Autres middlewares...
-        'role' => RoleMiddleware::class,  // Enregistrement du middleware 'role'
+        'role' => RoleMiddleware::class,
+        'prevent' => PreventBackHistory::class,
     ];
 }

@@ -1,6 +1,6 @@
 @extends('layouts.technicien')
 
-@section('title', 'Émetteurs en Suivi - ORTM')
+@section('title', 'Émetteurs en Suivi')
 
 @section('content')
 <div class="row">

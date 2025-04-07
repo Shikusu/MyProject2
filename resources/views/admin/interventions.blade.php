@@ -2,7 +2,9 @@
 
 @section('title', 'Gestion des interventions')
 
-@section('content')
+@section('page-title', 'Gestion des interventions')
+
+@section('contenu')
 <div class="container py-4">
     <h2 class="mb-4">Gestion des interventions</h2>
 
@@ -23,16 +25,16 @@
                     <td>{{ $emetteur->localisation->nom ?? 'Non définie' }}</td>
                     <td>
                         @php
-                            $status = $emetteur->status;
+                        $status = $emetteur->status;
                         @endphp
                         @if ($status == 'active')
-                            <span class="badge bg-success">Actif</span>
+                        <span class="badge bg-success">Actif</span>
                         @elseif ($status == 'panne')
-                            <span class="badge bg-danger">En panne</span>
+                        <span class="badge bg-danger">En panne</span>
                         @elseif ($status == 'En cours de réparation')
-                            <span class="badge bg-warning text-dark">En cours de réparation</span>
+                        <span class="badge bg-warning text-dark">En cours de réparation</span>
                         @else
-                            <span class="badge bg-secondary">{{ ucfirst($status) }}</span>
+                        <span class="badge bg-secondary">{{ ucfirst($status) }}</span>
                         @endif
                     </td>
                     <td>
@@ -109,12 +111,12 @@
 
 <!-- Script pour la validation de la date -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll("input[type='date'][id^='date_panne_']").forEach(input => {
             const today = new Date().toISOString().split('T')[0];
             input.setAttribute('max', today);
 
-            input.addEventListener('change', function () {
+            input.addEventListener('change', function() {
                 if (this.value > today) {
                     alert("La date de panne ne peut pas être ultérieure à aujourd'hui.");
                     this.value = today;

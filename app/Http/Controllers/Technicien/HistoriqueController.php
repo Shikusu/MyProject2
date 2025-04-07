@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Intervention;
 use App\Models\Admin\Piece; // Ajout de l'importation du modèle Piece
 use Illuminate\Http\Request;
+use App\Models\Notification;
 
 class HistoriqueController extends Controller
 {
@@ -16,6 +17,8 @@ class HistoriqueController extends Controller
      */
     public function index()
     {
+        $notifs = Notification::where('user_id', 1)->get();
+
         // Récupérer toutes les interventions
         $interventions = Intervention::with('emetteur')
             ->orderBy('date_panne', 'desc')
@@ -26,7 +29,7 @@ class HistoriqueController extends Controller
         $pieces = Piece::all();
 
         // Passer les interventions et les pièces à la vue
-        return view('technicien.historiques', compact('interventions', 'pieces'));
+        return view('technicien.historiques', compact('interventions', 'pieces', 'notifs'));
     }
 
     /**

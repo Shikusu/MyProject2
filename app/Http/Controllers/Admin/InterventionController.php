@@ -19,8 +19,9 @@ class InterventionController extends Controller
         $emetteurs = Emetteur::with('localisation', 'interventions')->get();
         $alertesTypes = Alerte::distinct()->pluck('type', 'type');
         $interventions = Intervention::whereNotNull('date_reparation')->get();
+        $notifs = Notification::where('user_id', 2)->get();
 
-        return view('admin.interventions', compact('emetteurs', 'alertesTypes', 'interventions'));
+        return view('admin.interventions', compact('emetteurs', 'alertesTypes', 'interventions', 'notifs'));
     }
 
 

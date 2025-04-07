@@ -1,5 +1,8 @@
 @extends('layouts.technicien')
 
+@section('title', 'Réparation')
+
+
 @section('content')
 <h2 class="mb-4 text-xl font-bold">Réparation de l'émetteur : {{ $emetteur->type }}</h2>
 
@@ -15,7 +18,7 @@
         <label for="pieces_utilisees" class="block">Pièces utilisées :</label>
         <select name="pieces_utilisees[]" multiple class="w-full p-2 border">
             @foreach($pieces as $piece)
-                <option value="{{ $piece->id }}">{{ $piece->nom_piece }}</option>
+            <option value="{{ $piece->id }}">{{ $piece->nom_piece }}</option>
             @endforeach
         </select>
     </div>

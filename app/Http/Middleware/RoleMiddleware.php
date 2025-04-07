@@ -41,7 +41,6 @@ class RoleMiddleware
         }
 
         // Si l'utilisateur n'est pas authentifié, rediriger vers la page de connexion
-        return redirect()->route('login.form');
+        return redirect()->route('login');
     }
 }
-

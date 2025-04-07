@@ -25,6 +25,13 @@
 
 
     <title>@yield('title', 'Dashboard Technicien') - {{ Auth::user()->name }}</title>
+
+    <script>
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function() {
+            window.history.pushState(null, null, window.location.href);
+        };
+    </script>
 </head>
 
 <body>

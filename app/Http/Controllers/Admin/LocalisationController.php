@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Admin\Localisation;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -11,8 +12,9 @@ class LocalisationController extends Controller
     // Affiche la liste des localisations
     public function index()
     {
+        $notifs = Notification::where('user_id', 2)->get();
         $localisations = Localisation::paginate(10); // Affiche 10 localisations par page
-        return view('admin.localisations', compact('localisations'));
+        return view('admin.localisations', compact('localisations', 'notifs'));
     }
 
     // Affiche le formulaire de création

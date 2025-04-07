@@ -46,8 +46,9 @@ class TechnicianController extends Controller
                 $emetteur->save();  // Sauvegarder le statut dans la base de données
             }
         }
+        $notifs = Notification::where('user_id', 1)->get();
 
-        return view('technicien.emetteurs', compact('emetteurs'));
+        return view('technicien.emetteurs', compact('emetteurs', 'notifs'));
     }
 
     public function historiques()
