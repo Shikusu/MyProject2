@@ -1,59 +1,51 @@
 @extends('layouts.technicien')
 
-@section('title', 'Émetteurs en Suivi')
+@section('title', 'Émetteurs en suivi')
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3>Liste des Émetteurs</h3>
-                <div class="notification-icon"></div>
-            </div>
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
+    <div class="border-0 shadow-sm card rounded-4">
+        <div class="bg-white border-0 card-header rounded-top-4 d-flex justify-content-between align-items-center">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover">
+                    <thead class="table-light">
                         <tr>
-                            <th>Localisation</th>
-                            <th>Type</th>
-                            <th>Date d'installation</th>
-                            <th>Date de dernière maintenance</th>
-                            <th>Prochaine maintenance prévue</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
+                            <th> Localisation</th>
+                            <th> Type</th>
+                            <th> Statut</th>
+                            <th> Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($emetteurs as $emetteur)
                         <tr>
-                            <td>{{ $emetteur->localisation->nom }}</td>
-                            <td>{{ $emetteur->type }}</td>
-                            <td>{{ $emetteur->date_installation }}</td>
-                            <td>{{ $emetteur->dernier_maintenance }}</td>
-                            <td>{{ $emetteur->maintenance_prevue!=null ?$emetteur->maintenance_prevue :"------" }}</td>
+                            <td>{{ $emetteur->localisation?->nom ?? 'Non défini' }}</td>
+                            <td>{{ ucfirst($emetteur->type) }}</td>
                             <td>
-                                @if ($emetteur->status == 'active')
-                                <span class="badge bg-success">Actif</span>
-                                @elseif($emetteur->status == 'panne')
-                                <span class="badge bg-danger">En Panne</span>
-                                @elseif($emetteur->status == 'En cours de réparation')
-                                <span class="badge bg-warning text-dark">En cours de réparation</span>
-                                @else
-                                <span class="badge bg-secondary">Non défini</span>
-                                @endif
+                                @php
+                                    $status = $emetteur->status;
+                                    $class = match($status) {
+                                        'active' => 'success',
+                                        'panne' => 'danger',
+                                        'En cours de réparation' => 'warning text-dark',
+                                        default => 'secondary'
+                                    };
+                                @endphp
+                                <span class="badge bg-{{ $class }} rounded-pill">{{ $status }}</span>
                             </td>
                             <td>
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#detailsModal" data-id="{{ $emetteur->id }}"
-                                    data-localisation="{{ $emetteur->localisation->nom }}"
+                                <button class="px-3 btn btn-outline-primary btn-sm rounded-pill"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#detailsModal"
+                                    data-id="{{ $emetteur->id }}"
+                                    data-localisation="{{ $emetteur->localisation->nom ?? 'Non défini' }}"
                                     data-type="{{ $emetteur->type }}"
                                     data-installation="{{ $emetteur->date_installation }}"
                                     data-maintenance="{{ $emetteur->dernier_maintenance }}"
-                                    @if ($emetteur->status != 'active')
                                     data-maintenance-prevue="{{ $emetteur->maintenance_prevue }}"
-                                    @endif
                                     data-status="{{ $emetteur->status }}">
-                                    Détails
+                                    Voir Détails
                                 </button>
                             </td>
                         </tr>
@@ -63,42 +55,39 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Modal Détails -->
 <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailsModalLabel">Détails de l'Émetteur</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="shadow-lg modal-content rounded-4">
+            <div class="modal-header bg-light rounded-top-4">
+                <h5 class="modal-title text-primary" id="detailsModalLabel">📋 Détails de l'Émetteur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Localisation :</strong> <span id="modalLocalisation"></span></p>
-                <p><strong>Type :</strong> <span id="modalType"></span></p>
-                <p><strong>Date d'installation :</strong> <span id="modalInstallation"></span></p>
-                <p><strong>Date de dernière maintenance :</strong> <span id="modalMaintenance"></span></p>
-                <p id="Bye"><strong>Prochaine maintenance prévue :</strong> <span id="modalMaintenancePrevue"></span></p>
-                <p><strong>Statut :</strong> <span id="modalStatus" class="badge"></span></p>
+                <ul class="mb-0 list-unstyled">
+                    <li><strong>📍 Localisation :</strong> <span id="modalLocalisation"></span></li>
+                    <li><strong>📡 Type :</strong> <span id="modalType"></span></li>
+                    <li><strong>🛠️ Installation :</strong> <span id="modalInstallation"></span></li>
+                    <li><strong>🔧 Dernière maintenance :</strong> <span id="modalMaintenance"></span></li>
+                    <li id="Bye"><strong>📅 Maintenance prévue :</strong> <span id="modalMaintenancePrevue"></span></li>
+                    <li><strong>⚙️ Statut :</strong> <span id="modalStatus" class="badge"></span></li>
+                </ul>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            <div class="modal-footer bg-light rounded-bottom-4">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Fermer</button>
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var detailsModal = document.getElementById("detailsModal");
-
         detailsModal.addEventListener("show.bs.modal", function(event) {
             var button = event.relatedTarget;
-
-            // Récupération des données
             var localisation = button.getAttribute("data-localisation");
             var type = button.getAttribute("data-type");
             var installation = button.getAttribute("data-installation");
@@ -106,28 +95,22 @@
             var maintenancePrevue = button.getAttribute("data-maintenance-prevue");
             var status = button.getAttribute("data-status");
 
-            // Mise à jour des informations dans le modal
             document.getElementById("modalLocalisation").textContent = localisation;
             document.getElementById("modalType").textContent = type;
             document.getElementById("modalInstallation").textContent = installation;
             document.getElementById("modalMaintenance").textContent = maintenance;
-            if (maintenancePrevue != null) {
+
+            if (maintenancePrevue) {
                 document.getElementById("Bye").style.display = "block";
-                document.getElementById("modalMaintenancePrevue").style.display = "inline";
                 document.getElementById("modalMaintenancePrevue").textContent = maintenancePrevue;
             } else {
                 document.getElementById("Bye").style.display = "none";
-                document.getElementById("modalMaintenancePrevue").style.display = "none";
             }
-            // Mise à jour du statut avec une couleur
+
             var modalStatus = document.getElementById("modalStatus");
             modalStatus.textContent = status;
+            modalStatus.className = "badge rounded-pill";
 
-            // Réinitialisation des classes de couleur
-            modalStatus.className =
-                "badge"; // On réinitialise les classes du badge avant de les ajouter.
-
-            // Application de la couleur selon le statut
             switch (status) {
                 case 'active':
                     modalStatus.classList.add("bg-success");

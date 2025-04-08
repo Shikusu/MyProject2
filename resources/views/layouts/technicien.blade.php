@@ -56,7 +56,7 @@
                 <a href="{{ route('technicien.historiques') }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
                     <i class="bi bi-file-earmark-text me-2"></i> Historique des Interventions
                 </a>
-                <a href="#" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
+                <a href="{{ route('technicien.profil') }}" class="bg-transparent list-group-item list-group-item-action second-text fw-bold">
                     <i class="bi bi-person-circle me-2"></i> Profil
                 </a>
 
@@ -84,31 +84,31 @@
                     <!-- Enhanced Notification Dropdown -->
                     @isset($notifs)
                     <div class="dropdown ms-3 me-3">
-                        <button class="btn btn-light btn-sm position-relative rounded-circle shadow-sm p-2"
+                        <button class="p-2 shadow-sm btn btn-light btn-sm position-relative rounded-circle"
                             type="button" id="messageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-envelope fs-5 text-primary"></i>
                             @if($notifs->where('est_lu', 0)->count() > 0)
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <span class="top-0 position-absolute start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ $notifs->where('est_lu', 0)->count() }}
                                 <span class="visually-hidden">messages non lus</span>
                             </span>
                             @endif
                         </button>
 
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-0"
+                        <ul class="py-0 border-0 shadow dropdown-menu dropdown-menu-end"
                             aria-labelledby="messageDropdown"
                             id="messageDropdownMenu"
                             style="min-width: 280px; max-height: 350px; overflow-y: auto;">
 
                             <!-- Notification Header -->
-                            <li class="dropdown-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+                            <li class="px-3 py-2 dropdown-header bg-light d-flex justify-content-between align-items-center">
                                 <span class="fw-bold text-primary">Notifications</span>
                                 @if($notifs->where('est_lu', 0)->count() > 0)
                                 <span class="badge bg-primary rounded-pill">{{ $notifs->where('est_lu', 0)->count() }}</span>
                                 @endif
                             </li>
 
-                            <div class="dropdown-divider m-0"></div>
+                            <div class="m-0 dropdown-divider"></div>
 
                             <!-- Notifications List -->
                             @if(count($notifs) > 0)
@@ -127,17 +127,17 @@
                                     </div>
                                     <div class="{{ $notif->est_vu == 0 ? 'fw-bold' : 'text-muted' }}">
                                         {{ $notif->message }}
-                                        <div class="small text-muted mt-1">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
+                                        <div class="mt-1 small text-muted">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
                                     </div>
                                 </a>
                             </li>
-                            <div class="dropdown-divider m-0"></div>
+                            <div class="m-0 dropdown-divider"></div>
                             @endif
                             @endforeach
 
                             @if(!$hasUnread)
                             <li>
-                                <div class="dropdown-item text-center py-3 text-muted">
+                                <div class="py-3 text-center dropdown-item text-muted">
                                     <i class="bi bi-check-circle me-1"></i>
                                     Aucune notification
                                 </div>
@@ -145,7 +145,7 @@
                             @endif
                             @else
                             <li>
-                                <div class="dropdown-item text-center py-3 text-muted">
+                                <div class="py-3 text-center dropdown-item text-muted">
                                     <i class="bi bi-check-circle me-1"></i>
                                     Aucune notification
                                 </div>
