@@ -63,6 +63,9 @@ Route::middleware(['auth', 'role:admin', 'prevent'])->prefix('admin')->name('adm
 
     // 🏢 Stations
     Route::get('/stations', [StationController::class, 'index'])->name('stations.index');
+
+    Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+
 });
 
 // 🛠 Routes pour les techniciens

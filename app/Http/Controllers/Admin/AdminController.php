@@ -12,10 +12,12 @@ class AdminController extends Controller
 
     public function index()
     {
-        $nombreEmetteurs = Emetteur::count();
+        $nombreEmetteursActifs = Emetteur::where('status', 'active')->count();
+        $nombreEmetteursPanne = Emetteur::where('status', 'panne')->count();
+        $nombreEmetteursEnReparation = Emetteur::where('status', 'reparation')->count();
         $notifs = Notification::where('user_id', 2)->get();
         // Assurez-vous que cette ligne fonctionne correctement
-        return view('admin.dashboard', compact('nombreEmetteurs'), compact('notifs'));
+        return view('admin.dashboard', compact('nombreEmetteursActifs', 'nombreEmetteursPanne', 'nombreEmetteursEnReparation', 'notifs'));
     }
     public function manageUsers()
     {
