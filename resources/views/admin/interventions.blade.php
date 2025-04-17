@@ -24,17 +24,15 @@
                     <td>{{ $emetteur->type }}</td>
                     <td>{{ $emetteur->localisation->nom ?? 'Non définie' }}</td>
                     <td>
-                        @php
-                        $status = $emetteur->status;
-                        @endphp
+                        @php $status = $emetteur->status; @endphp
                         @if ($status == 'active')
-                        <span class="badge bg-success">Actif</span>
+                            <span class="badge bg-success">Actif</span>
                         @elseif ($status == 'panne')
-                        <span class="badge bg-danger">En panne</span>
+                            <span class="badge bg-danger">En panne</span>
                         @elseif ($status == 'En cours de réparation')
-                        <span class="badge bg-warning text-dark">En cours de réparation</span>
+                            <span class="badge bg-warning text-dark">En cours de réparation</span>
                         @else
-                        <span class="badge bg-secondary">{{ ucfirst($status) }}</span>
+                            <span class="badge bg-secondary">{{ ucfirst($status) }}</span>
                         @endif
                     </td>
                     <td>
@@ -44,16 +42,20 @@
                         </button>
 
                         <!-- Modal pour afficher les détails de l'émetteur -->
-                        <div class="modal fade" id="interventionModal-{{ $emetteur->id }}" tabindex="-1" aria-labelledby="interventionModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="interventionModal-{{ $emetteur->id }}" tabindex="-1"
+                            aria-labelledby="interventionModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">Détails de l'émetteur</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Fermer"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{{ route('admin.interventions.declencherPanne', $emetteur->id) }}" method="POST">
+                                        <form action="{{ route('admin.interventions.declencherPanne', $emetteur->id) }}"
+                                            method="POST">
                                             @csrf
+
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Type</strong></label>
                                                 <p>{{ $emetteur->type }}</p>
@@ -74,7 +76,9 @@
                                             @if ($emetteur->status == "active")
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Date de la panne</strong></label>
-                                                <input type="date" class="form-control" name="date_panne" id="date_panne_{{ $emetteur->id }}"
+                                                <input type="date" class="form-control"
+                                                    name="date_panne"
+                                                    id="date_panne_{{ $emetteur->id }}"
                                                     max="{{ date('Y-m-d') }}" required>
                                             </div>
                                             <div class="mb-3">
@@ -109,14 +113,13 @@
     </div>
 </div>
 
-<!-- Script pour la validation de la date -->
+<!-- Script JS pour la validation côté client -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date().toISOString().split('T')[0];
         document.querySelectorAll("input[type='date'][id^='date_panne_']").forEach(input => {
-            const today = new Date().toISOString().split('T')[0];
             input.setAttribute('max', today);
-
-            input.addEventListener('change', function() {
+            input.addEventListener('change', function () {
                 if (this.value > today) {
                     alert("La date de panne ne peut pas être ultérieure à aujourd'hui.");
                     this.value = today;

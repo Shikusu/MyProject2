@@ -17,28 +17,27 @@ class InterventionController extends Controller
     public function index()
     {
         $emetteurs = Emetteur::with('localisation', 'interventions')->get();
-        $alertesTypes = Alerte::distinct()->pluck('type', 'type');
+
+        // Types d'alertes définis manuellement
+        $alertesTypes = ['Panne matériel', 'Problème réseau', 'Maintenance prévue'];
+
         $interventions = Intervention::whereNotNull('date_reparation')->get();
         $notifs = Notification::where('user_id', 2)->get();
 
         return view('admin.interventions', compact('emetteurs', 'alertesTypes', 'interventions', 'notifs'));
     }
 
-
     // Déclencher une alerte pour une panne
     public function declencherPanne(Request $request, $emetteurId)
     {
-        // Validation des données envoyées
         $request->validate([
             'date_panne' => 'required|date|before_or_equal:today',
             'message' => 'required|string',
-            'type_alerte' => 'required|string',
+            'type_alerte' => 'required|in:Panne matériel,Problème réseau,Maintenance prévue',
         ]);
 
-        // Trouver l'émetteur
         $emetteur = Emetteur::findOrFail($emetteurId);
 
-        // Créer une nouvelle intervention
         $intervention = new Intervention();
         $intervention->emetteur_id = $emetteur->id;
         $intervention->date_panne = $request->date_panne;
@@ -46,25 +45,22 @@ class InterventionController extends Controller
         $intervention->type_alerte = $request->type_alerte;
         $intervention->save();
 
-        //maj emetteur
         $emetteur->panne_declenchee = 1;
         $emetteur->status = 'panne';
         $emetteur->date_panne = $request->date_panne;
         $emetteur->save();
 
-        //creation notif
         $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est en panne";
-
 
         $notif = new Notification();
         $notif->message = $message;
-        $notif->user_id = 1; //logik to be changet
+        $notif->user_id = 1; // à adapter dynamiquement selon la logique future
         $notif->save();
 
-        // Redirection avec un message de succès
         return redirect()->route('admin.interventions.index')->with('success', 'Panne déclenchée avec succès.');
     }
 
+    // Lancer une réparation
     public function lancementReparation(Request $request, $id)
     {
         $request->validate([
@@ -88,35 +84,34 @@ class InterventionController extends Controller
 
                 if ($piece->quantite < $pieceData['quantite']) {
                     return response()->json([
-                        'error' => "Stock insuffisant pour la piece: {$piece->nom}.\n Disponible: {$piece->quantite}\n Demande: {$pieceData['quantite']}"
+                        'error' => "Stock insuffisant pour la pièce : {$piece->nom}.\nDisponible : {$piece->quantite}\nDemande : {$pieceData['quantite']}"
                     ], 400);
                 }
 
                 $piece->quantite -= $pieceData['quantite'];
                 $piece->save();
-                $Inter_piece = new InterventionPiece();
-                $Inter_piece->intervention_id = $id;
-                $Inter_piece->piece_id = $pieceData['id'];
-                $Inter_piece->save();
+
+                $interventionPiece = new InterventionPiece();
+                $interventionPiece->intervention_id = $id;
+                $interventionPiece->piece_id = $pieceData['id'];
+                $interventionPiece->save();
             }
         }
 
         $intervention->date_reparation = $request->date_reparation;
+        $intervention->date_reparation_fait = $request->date_reparation_fait;
+        $intervention->save();
 
         $emetteur->status = 'En cours de réparation';
-        $emetteur->maintenance_prevue    = $request->date_reparation;
+        $emetteur->maintenance_prevue = $request->date_reparation;
+        $emetteur->save();
 
         $message = "La " . $emetteur->type . " localisée à " . $emetteur->localisation->nom . " est en cours de réparation";
 
-
         $notif = new Notification();
         $notif->message = $message;
-        $notif->user_id = 2; //logik to be changet
+        $notif->user_id = 2; // à adapter selon la logique future
         $notif->save();
-
-        $intervention->date_reparation = $request->date_reparation;
-        $intervention->date_reparation_fait = $request->date_reparation_fait;
-        $intervention->save();
 
         return response()->json(['message' => 'Réparation enregistrée avec succès.']);
     }

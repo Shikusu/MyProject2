@@ -43,11 +43,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('prevent')
 Route::middleware(['auth', 'role:admin', 'prevent'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
-    // 🚨 Alertes
-    Route::resource('alertes', AlerteController::class);
-    Route::put('alertes/{id}/resolve', [AlerteController::class, 'resolve'])->name('alertes.resolve');
-    Route::put('alertes/{id}/inprogress', [AlerteController::class, 'inProgress'])->name('alertes.inprogress');
-
     // 🚨 Interventions
     Route::resource('interventions', InterventionController::class);
     Route::post('/interventions/declencher-panne/{id}', [InterventionController::class, 'declencherPanne'])->name('interventions.declencherPanne');

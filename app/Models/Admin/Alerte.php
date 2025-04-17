@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Alerte extends Model
 {
     use HasFactory;
+    protected $table = 'type_alerte'; // <== Indique la bonne table ici
+
 
     protected $fillable = [
         'emetteur_id',
-        'technicien_id',
         'type',
         'message',
         'date_alerte',

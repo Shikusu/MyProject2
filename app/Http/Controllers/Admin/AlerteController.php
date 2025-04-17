@@ -9,14 +9,17 @@ use App\Models\Admin\Emetteur;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 
-
 class AlerteController extends Controller
 {
     // Afficher les alertes avec pagination de 5 par page
     public function index()
     {
         $alertes = Alerte::paginate(5);
+
+        // Récupération des notifications — ici, on suppose qu’elles sont liées à un user_id
+        // Attention : vérifie bien que `Notification` utilise bien `user_id` (et pas `technicien_id`)
         $notifs = Notification::where('user_id', 2)->get();
+
         return view('admin.alertes', compact('alertes', 'notifs'));
     }
 
@@ -30,23 +33,24 @@ class AlerteController extends Controller
         ]);
 
         $emetteur = Emetteur::findOrFail($validated['emetteur_id']);
+
+        // On récupère le technicien, mais ce champ sera utilisé uniquement dans la table `alertes`
         $technicien = User::where('role', 'technicien')->first();
 
         if (!$technicien) {
             return redirect()->back()->with('error', 'Aucun technicien disponible.');
         }
 
+        // Création de l’alerte
         $alerte = Alerte::create([
             'emetteur_id' => $emetteur->id,
-            'technicien_id' => $technicien->id,
+            'technicien_id' => $technicien->id, // Ne touche pas la table `type_alerte`, donc OK
             'date_alerte' => now(),
             'message' => $validated['message'],
             'type' => $validated['type'],
             'resolue' => false,
         ]);
 
-
-        // Vérification si la requête est AJAX
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
