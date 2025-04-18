@@ -4,113 +4,87 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Alerte;
-use App\Models\User;
-use App\Models\Admin\Emetteur;
-use App\Models\Notification;
 use Illuminate\Http\Request;
-
 
 class AlerteController extends Controller
 {
-    // Afficher les alertes avec pagination de 5 par page
+    // Liste des types d'alerte
     public function index()
     {
-        $alertes = Alerte::paginate(5);
-        $notifs = Notification::where('user_id', 2)->get();
-        return view('admin.alertes', compact('alertes', 'notifs'));
+        // Récupération des alertes avec pagination
+        $alertes = Alerte::select('id', 'type')->paginate(5);  // Pagination des alertes
+
+
+        // Envoi à la vue avec la pagination
+        return view('admin.alertes', compact('alertes'));  // Envoi des alertes à la vue
     }
 
-    // Ajouter une nouvelle alerte
+    // Ajouter un nouveau type d'alerte
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type' => 'required|string',
-            'message' => 'required|string|max:255',
-            'emetteur_id' => 'required|exists:emetteurs,id',
+            'type' => 'required|string|max:50',
         ]);
 
-        $emetteur = Emetteur::findOrFail($validated['emetteur_id']);
-        $technicien = User::where('role', 'technicien')->first();
-
-        if (!$technicien) {
-            return redirect()->back()->with('error', 'Aucun technicien disponible.');
-        }
-
+        // Création de l'alerte
         $alerte = Alerte::create([
-            'emetteur_id' => $emetteur->id,
-            'technicien_id' => $technicien->id,
-            'date_alerte' => now(),
-            'message' => $validated['message'],
             'type' => $validated['type'],
-            'resolue' => false,
         ]);
 
-
-        // Vérification si la requête est AJAX
+        // Si la requête est en AJAX, retour de la réponse sous format JSON
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'alerte' => $alerte
+                'alerte' => $alerte,
             ]);
         }
 
-        return redirect()->route('admin.alertes.index')->with('success', 'Alerte ajoutée avec succès!');
+        // Redirection avec message de succès
+        return redirect()->route('admin.alertes.index')->with('success', 'Type d\'alerte ajouté avec succès!');
     }
 
-    // Modifier une alerte
+    // Modifier un type d'alerte
     public function edit($id)
     {
+        // Trouver l'alerte par ID
         $alerte = Alerte::findOrFail($id);
+
+        // Retourner l'alerte sous format JSON
         return response()->json([
             'success' => true,
-            'alerte' => $alerte
+            'alerte' => $alerte,
         ]);
     }
 
-    // Mettre à jour une alerte
+    // Mettre à jour un type d'alerte
     public function update(Request $request, $id)
     {
+        // Validation de la demande
         $validated = $request->validate([
-            'type' => 'required|string',
-            'message' => 'required|string|max:255',
+            'type' => 'required|string|max:69',
         ]);
 
+        // Trouver l'alerte par ID
         $alerte = Alerte::findOrFail($id);
         $alerte->update([
             'type' => $validated['type'],
-            'message' => $validated['message'],
         ]);
 
+        // Retourner la réponse sous format JSON
         return response()->json([
             'success' => true,
-            'alerte' => $alerte
+            'alerte' => $alerte,
         ]);
     }
 
-    // Supprimer une alerte
+    // Supprimer un type d'alerte
     public function destroy($id)
     {
+        // Trouver l'alerte par ID et la supprimer
         $alerte = Alerte::findOrFail($id);
         $alerte->delete();
 
+        // Retourner une réponse JSON de succès
         return response()->json(['success' => true]);
-    }
-
-    // Résoudre une alerte
-    public function resolve($id)
-    {
-        $alerte = Alerte::findOrFail($id);
-        $alerte->update(['resolue' => true]);
-
-        return redirect()->route('admin.alertes.index')->with('success', 'Alerte résolue avec succès!');
-    }
-
-    // Marquer une alerte comme en cours
-    public function inProgress($id)
-    {
-        $alerte = Alerte::findOrFail($id);
-        $alerte->update(['resolue' => false]);
-
-        return redirect()->route('admin.alertes.index')->with('success', 'Alerte en cours de traitement!');
     }
 }

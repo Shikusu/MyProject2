@@ -45,8 +45,7 @@ Route::middleware(['auth', 'role:admin', 'prevent'])->prefix('admin')->name('adm
 
     // 🚨 Alertes
     Route::resource('alertes', AlerteController::class);
-    Route::put('alertes/{id}/resolve', [AlerteController::class, 'resolve'])->name('alertes.resolve');
-    Route::put('alertes/{id}/inprogress', [AlerteController::class, 'inProgress'])->name('alertes.inprogress');
+
 
     // 🚨 Interventions
     Route::resource('interventions', InterventionController::class);

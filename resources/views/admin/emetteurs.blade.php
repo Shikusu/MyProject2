@@ -29,12 +29,10 @@
 
                         <div class="form-group">
                             <label for="id_localisation">Localisation</label>
-                            <select name="id_localisation" id="id_localisation" class="form-control" required>
-                                <option value="">Sélectionner une localisation</option>
-                                @foreach ($localisations as $localisation)
-                                <option value="{{ $localisation->id }}" {{ isset($emetteur) && $emetteur->id_localisation == $localisation->id ? 'selected' : '' }}>
-                                    {{ $localisation->nom }}
-                                </option>
+                            <select name="localisation_id" required>
+                                <option value="">-- Choisir une localisation --</option>
+                                @foreach($localisations as $localisation)
+                                    <option value="{{ $localisation->id }}">{{ $localisation->nom }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -47,7 +45,7 @@
 
                         <div class="form-group">
                             <label for="dernier_maintenance">Dernière maintenance</label>
-                            <input type="date" id="dernier_maintenance" name="dernier_maintenance" class="form-control"
+                            <input type="date" id="dernier_maintenance" name="derniere_maintenance" class="form-control"
                                 value="{{ isset($emetteur) ? $emetteur->dernier_maintenance : '' }}">
                         </div>
 

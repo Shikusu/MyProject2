@@ -35,23 +35,25 @@ class EmetteurController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'type' => 'required',
-            'id_localisation' => 'required',
+            'type' => 'required|in:radio,television',
+            'localisation_id' => 'required|exists:localisations,id',
             'date_installation' => 'required|date',
-            'dernier_maintenance' => 'nullable|date',
             'maintenance_prevue' => 'nullable|date',
+            'derniere_maintenance' => 'nullable|date',
         ]);
 
-        $emetteur = new Emetteur();
-        $emetteur->type = $request->type;
-        $emetteur->id_localisation = $request->id_localisation;
-        $emetteur->date_installation = $request->date_installation;
-        $emetteur->dernier_maintenance = $request->dernier_maintenance;
-        $emetteur->maintenance_prevue = $request->maintenance_prevue;
-        $emetteur->save();
+        Emetteur::create([
+            'type' => $request->type,
+            'localisation_id' => $request->localisation_id,
+            'date_installation' => $request->date_installation,
+            'maintenance_prevue' => $request->maintenance_prevue,
+            'derniere_maintenance' => $request->derniere_maintenance,
+        ]);
 
-        return redirect()->route('admin.emetteurs.index')->with('success', 'Émetteur ajouté avec succès.');
+        return redirect()->back()->with('success', 'Émetteur ajouté avec succès');
     }
+
+
 
     // Affichage du formulaire d'édition
     public function edit($id)
@@ -72,17 +74,17 @@ class EmetteurController extends Controller
     {
         $request->validate([
             'type' => 'required',
-            'id_localisation' => 'required',
+            'localisation_id' => 'required',
             'date_installation' => 'required|date',
-            'dernier_maintenance' => 'nullable|date',
+            'derniere_maintenance' => 'nullable|date',
             'maintenance_prevue' => 'nullable|date',
         ]);
 
         $emetteur = Emetteur::findOrFail($id);
         $emetteur->type = $request->type;
-        $emetteur->id_localisation = $request->id_localisation;
+        $emetteur->localisation_id = $request->localisation_id;
         $emetteur->date_installation = $request->date_installation;
-        $emetteur->dernier_maintenance = $request->dernier_maintenance;
+        $emetteur->derniere_maintenance = $request->derniere_maintenance;
         $emetteur->maintenance_prevue = $request->maintenance_prevue;
         $emetteur->save();
 

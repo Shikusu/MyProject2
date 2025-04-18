@@ -9,24 +9,11 @@ class Alerte extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'emetteur_id',
-        'technicien_id',
-        'type',
-        'message',
-        'date_alerte',
-        'status',
-        'resolue',
-        'is_read'
-    ];
+    protected $fillable = ['type'];
+
 
     public function emetteur()
     {
         return $this->belongsTo(Emetteur::class);
-    }
-
-    public function technicien()
-    {
-        return $this->belongsTo('App\Models\User', 'technicien_id');
     }
 }

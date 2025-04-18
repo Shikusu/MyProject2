@@ -6,18 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
-    {
-        Schema::table('emetteurs', function (Blueprint $table) {
-            $table->string('status')->default('active'); // Vous pouvez définir un statut par défaut
-        });
+    public function up(): void {
+        if (!Schema::hasColumn('emetteurs', 'status')) {
+            Schema::table('emetteurs', function (Blueprint $table) {
+                $table->string('status')->default('active');
+            });
+        }
     }
 
-    public function down()
-    {
-        Schema::table('emetteurs', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+    public function down(): void {
+        if (Schema::hasColumn('emetteurs', 'status')) {
+            Schema::table('emetteurs', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
     }
 
 };

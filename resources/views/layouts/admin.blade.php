@@ -75,27 +75,27 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <ul class="mb-2 navbar-nav ms-auto mb-lg-0">
                         @isset($notifs)
                         <!-- Notification Dropdown -->
                         <li class="nav-item dropdown me-3">
-                            <button class="btn btn-light btn-sm position-relative rounded-circle shadow-sm p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="p-2 shadow-sm btn btn-light btn-sm position-relative rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-envelope fs-5 text-primary"></i>
                                 @if($notifs->where('est_lu', 0)->count() > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span class="top-0 position-absolute start-100 translate-middle badge rounded-pill bg-danger">
                                     {{ $notifs->where('est_lu', 0)->count() }}
                                     <span class="visually-hidden">messages non lus</span>
                                 </span>
                                 @endif
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-0" style="min-width: 280px; max-height: 350px; overflow-y: auto;">
-                                <li class="dropdown-header bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+                            <ul class="py-0 border-0 shadow dropdown-menu dropdown-menu-end" style="min-width: 280px; max-height: 350px; overflow-y: auto;">
+                                <li class="px-3 py-2 dropdown-header bg-light d-flex justify-content-between align-items-center">
                                     <span class="fw-bold text-primary">Notifications</span>
                                     @if($notifs->where('est_lu', 0)->count() > 0)
                                     <span class="badge bg-primary rounded-pill">{{ $notifs->where('est_lu', 0)->count() }}</span>
                                     @endif
                                 </li>
-                                <div class="dropdown-divider m-0"></div>
+                                <div class="m-0 dropdown-divider"></div>
                                 @forelse($notifs as $notif)
                                 @if(!$notif->est_lu)
                                 <li>
@@ -108,15 +108,15 @@
                                         </div>
                                         <div class="{{ $notif->est_vu == 0 ? 'fw-bold' : 'text-muted' }}">
                                             {{ $notif->message }}
-                                            <div class="small text-muted mt-1">{{ $notif->created_at->diffForHumans() }}</div>
+                                            <div class="mt-1 small text-muted">{{ $notif->created_at->diffForHumans() }}</div>
                                         </div>
                                     </a>
                                 </li>
-                                <div class="dropdown-divider m-0"></div>
+                                <div class="m-0 dropdown-divider"></div>
                                 @endif
                                 @empty
                                 <li>
-                                    <div class="dropdown-item text-center py-3 text-muted">
+                                    <div class="py-3 text-center dropdown-item text-muted">
                                         <i class="bi bi-check-circle me-1"></i>
                                         Aucune notification
                                     </div>
@@ -147,7 +147,7 @@
             </nav>
 
             <!-- Main Content -->
-            <div class="container-fluid px-4">
+            <div class="px-4 container-fluid">
                 @yield('contenu')
             </div>
         </div>

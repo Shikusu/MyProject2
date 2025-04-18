@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Technicien;
 
 use App\Models\Admin\Emetteur;
-
 use App\Models\Admin\Intervention;
 use App\Models\Admin\Alerte;
 use Illuminate\Http\Request;
@@ -20,21 +19,14 @@ class TechnicianEmetteurController extends Controller
      */
     public function index()
     {
-
-
         // Récupérer tous les émetteurs avec leur localisation associée
         $emetteurs = Emetteur::with('localisation')->get();
-        // Compter les alertes non lues pour le technicien
-        $user = Auth::user();
-        $notificationsCount = Alerte::where('technicien_id', $user->id)
-            ->where('status', 'non_lue')
-            ->count(); // Compter les alertes non lues
-        $interventions = Intervention::with('emetteur')
-            ->get();
-        $notifs = Intervention::with('emetteur')
-            ->get();
 
-        // Retourner la vue avec les émetteurs et le compteur d'alertes non lues
+        $notificationsCount = Alerte::count(); // Compte simplement toutes les alertes
+
+        $interventions = Intervention::with('emetteur')->get();
+        $notifs = Intervention::with('emetteur')->get();
+
         return view('technicien.emetteurs', compact('emetteurs', 'notificationsCount', 'interventions', 'notifs'));
     }
 
@@ -45,20 +37,9 @@ class TechnicianEmetteurController extends Controller
      */
     public function showAlertes()
     {
-        // Vérifier si l'utilisateur est authentifié
-        $user = Auth::user();
+        // Afficher toutes les alertes sans filtrage sur 'technicien_id' ou 'is_read'
+        $alertes = Alerte::all();
 
-        if (!$user) {
-            // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
-            return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
-        }
-
-        // Récupérer les alertes non lues pour le technicien
-        $alertes = Alerte::where('technicien_id', $user->id)
-            ->where('status', 'non_lue')
-            ->get();
-
-        // Retourner la vue avec les alertes
         return view('technicien.alertes', compact('alertes'));
     }
 
@@ -70,28 +51,8 @@ class TechnicianEmetteurController extends Controller
      */
     public function marquerCommeLue($alerteId)
     {
-        // Vérifier si l'utilisateur est authentifié
-        $user = Auth::user();
-
-        if (!$user) {
-            // Rediriger si l'utilisateur n'est pas authentifié
-            return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
-        }
-
-        // Trouver l'alerte par son ID
-        $alerte = Alerte::findOrFail($alerteId);
-
-        // Vérifier si l'alerte appartient à l'utilisateur technicien
-        if ($alerte->technicien_id === $user->id) {
-            // Mettre à jour le statut de l'alerte
-            $alerte->status = 'lue';
-            $alerte->save();
-
-            return back()->with('success', 'Alerte marquée comme lue.');
-        }
-
-        // Si l'alerte ne correspond pas au technicien, retourner une erreur
-        return back()->with('error', 'Accès non autorisé à cette alerte.');
+        // Il n'y a plus de champ "status", donc on ne fait rien ici
+        return back()->with('info', 'Aucune action effectuée car le champ "status" n’existe plus.');
     }
 
     /**

@@ -65,25 +65,12 @@ class TechnicianController extends Controller
         return view('technicien.historiques', compact('interventions', 'pieces'));
     }
 
-    public function supprimerInterventionsSelectionnees(Request $request)
-    {
-        $selectedInterventions = $request->input('selected_interventions');
-
-        if (empty($selectedInterventions)) {
-            return back()->with('error', 'Aucune intervention sélectionnée');
-        }
-
-        Intervention::whereIn('id', $selectedInterventions)->delete();
-
-        return back()->with('success', 'Interventions supprimées avec succès');
-    }
 
     public function declencherPanne(Request $request, $emetteurId)
     {
         $validator = Validator::make($request->all(), [
             'date_panne' => 'required|date',
-            'message' => 'required|string',
-            'type_alerte' => 'required|string',
+            'type' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -97,19 +84,16 @@ class TechnicianController extends Controller
 
         $emetteur->update(['status' => 'En panne']);
 
+        // Créer une alerte avec uniquement "id" et "type"
         $alerte = Alerte::create([
-            'emetteur_id' => $emetteurId,
-            'date_panne' => $request->input('date_panne'),
-            'message' => $request->input('message'),
-            'type_alerte' => $request->input('type_alerte'),
-            'status' => 'non_lue',
+            'type' => $request->input('type'),
         ]);
 
+        // Lier l'alerte à l'intervention uniquement via type
         Intervention::create([
             'emetteur_id' => $emetteurId,
             'date_panne' => $request->input('date_panne'),
-            'message' => $request->input('message'),
-            'type_alerte' => $request->input('type_alerte'),
+            'type_alerte' => $request->input('type'),
             'status' => 'En cours de réparation',
         ]);
 
@@ -181,6 +165,7 @@ class TechnicianController extends Controller
             $intervention->pieces()->sync($request->input('pieces_utilisees'));
         }
 
+        // Si tu veux marquer l'alerte comme traitée manuellement
         if ($intervention->alerte) {
             $intervention->alerte->update(['status' => 'traitée']);
         }
@@ -188,10 +173,9 @@ class TechnicianController extends Controller
         return redirect()->route('technicien.historiques')->with('success', 'Réparation enregistrée avec succès.');
     }
 
-    // ✅ Méthode pour afficher le profil du technicien connecté
     public function profil()
     {
-        $technicien = Auth::user(); // Assurez-vous d'utiliser le bon guard
+        $technicien = Auth::user();
         return view('technicien.profil', compact('technicien'));
     }
 }

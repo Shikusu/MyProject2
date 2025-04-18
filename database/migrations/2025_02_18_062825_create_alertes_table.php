@@ -9,20 +9,15 @@ class CreateAlertesTable extends Migration
     public function up()
     {
         Schema::create('alertes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('emetteur_id')->constrained('emetteurs')->onDelete('cascade');
-            $table->foreignId('technicien_id')->constrained('users')->onDelete('cascade');
-            $table->string('type');
-            $table->text('message');
-            $table->boolean('resolue')->default(false);
-            $table->boolean('is_read')->default(false); // Ajouté
-            $table->timestamp('date_alerte')->useCurrent();
-            $table->timestamps();
+            $table->id();              // Clé primaire
+            $table->string('type');    // Type d'alerte
+            $table->timestamps();      // created_at et updated_at
         });
     }
 
+
     public function down()
-    {
-        Schema::dropIfExists('alertes');
-    }
+{
+    Schema::dropIfExists('alertes');
+}
 }

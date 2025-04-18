@@ -9,20 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::table('interventions', function (Blueprint $table) {
-            $table->text('message')->nullable();  // Ajoute le champ message, nullable pour être optionnel
-        });
+    public function up(): void {
+        if (!Schema::hasColumn('interventions', 'message')) {
+            Schema::table('interventions', function (Blueprint $table) {
+                $table->text('message')->nullable();
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('interventions', function (Blueprint $table) {
-            $table->dropColumn('message');  // Enlève la colonne message
-        });
+    public function down(): void {
+        if (Schema::hasColumn('interventions', 'message')) {
+            Schema::table('interventions', function (Blueprint $table) {
+                $table->dropColumn('message');
+            });
+        }
     }
+
 };

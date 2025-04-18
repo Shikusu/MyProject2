@@ -14,9 +14,7 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             if (Auth::check()) {
                 $technicienId = Auth::user()->id;
-                $notificationsCount = Alerte::where('technicien_id', $technicienId)
-                    ->where('is_read', false)
-                    ->count();
+                $notificationsCount  = Alerte::count();
                 $view->with('notificationsCount', $notificationsCount);
             }
         });
