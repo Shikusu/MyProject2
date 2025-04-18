@@ -97,13 +97,6 @@ class TechnicianController extends Controller
 
         $emetteur->update(['status' => 'En panne']);
 
-        $alerte = Alerte::create([
-            'emetteur_id' => $emetteurId,
-            'date_panne' => $request->input('date_panne'),
-            'message' => $request->input('message'),
-            'type_alerte' => $request->input('type_alerte'),
-            'status' => 'non_lue',
-        ]);
 
         Intervention::create([
             'emetteur_id' => $emetteurId,

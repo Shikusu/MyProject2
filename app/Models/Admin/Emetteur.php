@@ -42,9 +42,4 @@ class Emetteur extends Model
         return $this->hasMany(Intervention::class);
     }
 
-    // Relation avec la table Alerte
-    public function alertes()
-    {
-        return $this->hasMany(Alerte::class);
-    }
 }
