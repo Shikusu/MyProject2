@@ -22,6 +22,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    
     <title>@yield('title', 'Dashboard')</title>
 </head>
 
@@ -171,7 +172,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Oui, dé Luxconnexion',
+                confirmButtonText: 'Oui, déconnexion',
                 cancelButtonText: 'Annuler'
             }).then((result) => {
                 if (result.isConfirmed) {

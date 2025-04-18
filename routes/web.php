@@ -43,10 +43,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('prevent')
 Route::middleware(['auth', 'role:admin', 'prevent'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
+<<<<<<< HEAD
     // 🚨 Alertes
     Route::resource('alertes', AlerteController::class);
 
 
+=======
+>>>>>>> 0b3433a30e3fd718479fae58f69306470fb85508
     // 🚨 Interventions
     Route::resource('interventions', InterventionController::class);
     Route::post('/interventions/declencher-panne/{id}', [InterventionController::class, 'declencherPanne'])->name('interventions.declencherPanne');
@@ -62,6 +65,9 @@ Route::middleware(['auth', 'role:admin', 'prevent'])->prefix('admin')->name('adm
 
     // 🏢 Stations
     Route::get('/stations', [StationController::class, 'index'])->name('stations.index');
+
+    Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+
 });
 
 // 🛠 Routes pour les techniciens
