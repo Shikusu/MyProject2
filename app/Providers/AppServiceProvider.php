@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Middleware\RoleMiddleware;  // Importation du middleware
+use Illuminate\Pagination\Paginator; // Importation du modèle User
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Assurer une longueur par défaut pour les colonnes de type string dans la base de données
         Schema::defaultStringLength(191);
+        Paginator::useBootstrap();
 
         // Enregistrer le middleware 'role' sans Kernel.php
         Route::aliasMiddleware('role', RoleMiddleware::class);

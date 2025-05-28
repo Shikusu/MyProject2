@@ -18,9 +18,34 @@ class TechnicianController extends Controller
     public function dashboard()
     {
         $nombreEmetteurs = Emetteur::count();
-        $notifs = Notification::where('user_id', Auth::id())->get();
 
-        return view('technicien.dashboard', compact('nombreEmetteurs', 'notifs'));
+        $maintenancesProches = Emetteur::with('localisation', 'derniereIntervention')
+            ->whereNotNull('maintenance_prevue')
+            ->orderBy('maintenance_prevue')
+            ->paginate(2);
+
+        $interventionsParJour = Intervention::selectRaw('DATE(date_reparation) as date, COUNT(*) as total')
+            ->whereNotNull('date_reparation')
+            ->where('date_reparation', '>=', now()->subDays(7))
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        $notifs = Notification::where('user_id', 1)->get();
+
+        $emetteursActifs = Emetteur::where('status', 'Actif')->count();
+        $emetteursEnPanne = Emetteur::where('status', 'En panne')->count();
+        $emetteursEnReparation = Emetteur::where('status', 'En cours de réparation')->count();
+
+        return view('technicien.dashboard', compact(
+            'nombreEmetteurs',
+            'maintenancesProches',
+            'interventionsParJour',
+            'notifs',
+            'emetteursActifs',
+            'emetteursEnPanne',
+            'emetteursEnReparation'
+        ));
     }
 
     public function markAsRead($id)
@@ -37,40 +62,70 @@ class TechnicianController extends Controller
     public function emetteurs()
     {
         $emetteurs = Emetteur::with('localisation')->get();
+        $aujourdhui = Carbon::today();
 
         foreach ($emetteurs as $emetteur) {
             if (is_null($emetteur->status)) {
                 $emetteur->status = 'Actif';
                 $emetteur->save();
             }
+
+            $derniereIntervention = $emetteur->interventions()
+                ->where('status', 'En cours de réparation')
+                ->orderBy('date_reparation', 'desc')
+                ->first();
+
+            if ($derniereIntervention && $derniereIntervention->date_reparation) {
+                $dateReparation = Carbon::parse($derniereIntervention->date_reparation);
+                if ($aujourdhui->gte($dateReparation)) {
+                    $derniereIntervention->update(['status' => 'Actif']);
+                    $emetteur->update([
+                        'status' => 'Actif',
+                        'derniere_maintenance' => now()
+                    ]);
+                }
+            }
         }
 
-        $notifs = Notification::where('user_id', Auth::id())->get();
+        $notifs = Notification::where('user_id', 1)->get();
 
         return view('technicien.emetteurs', compact('emetteurs', 'notifs'));
     }
 
     public function historiques()
     {
-        $interventions = Intervention::with(['emetteur', 'alerte'])
-            ->orderBy('date_panne', 'desc')
-            ->get();
+        $notifs = Notification::where('user_id', 1)->get();
 
-        foreach ($interventions as $intervention) {
-            $intervention->is_new = Carbon::parse($intervention->date_panne)->gt(now()->subDays(7));
-        }
+        $interventions = Intervention::with('emetteur')
+            ->orderBy('date_panne', 'desc')
+            ->whereNull('date_reparation')
+            ->get();
 
         $pieces = Piece::all();
 
-        return view('technicien.historiques', compact('interventions', 'pieces'));
+        return view('technicien.historiques', compact('interventions', 'pieces', 'notifs'));
     }
 
+    public function deleteSelectedInterventions(Request $request)
+    {
+        $request->validate([
+            'selected_interventions' => 'required|array',
+            'selected_interventions.*' => 'exists:interventions,id',
+        ]);
+
+        Intervention::whereIn('id', $request->selected_interventions)->delete();
+
+        return redirect()->route('technicien.historiques')
+            ->with('success', 'Les interventions sélectionnées ont été supprimées avec succès.');
+    }
 
     public function declencherPanne(Request $request, $emetteurId)
     {
         $validator = Validator::make($request->all(), [
             'date_panne' => 'required|date',
             'type' => 'required|string',
+            'message' => 'nullable|string',
+            'type_alerte' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -84,12 +139,14 @@ class TechnicianController extends Controller
 
         $emetteur->update(['status' => 'En panne']);
 
-        // Créer une alerte avec uniquement "id" et "type"
-        $alerte = Alerte::create([
-            'type' => $request->input('type'),
+        Alerte::create([
+            'emetteur_id' => $emetteurId,
+            'date_panne' => $request->input('date_panne'),
+            'message' => $request->input('message'),
+            'type_alerte' => $request->input('type_alerte'),
+            'status' => 'non_lue',
         ]);
 
-        // Lier l'alerte à l'intervention uniquement via type
         Intervention::create([
             'emetteur_id' => $emetteurId,
             'date_panne' => $request->input('date_panne'),
@@ -145,7 +202,7 @@ class TechnicianController extends Controller
         $emetteur = $intervention->emetteur;
 
         $intervention->update([
-            'status' => 'Résolu',
+            'status' => 'Actif',
             'details_reparation' => $request->input('details_reparation'),
             'date_reparation' => now(),
         ]);
@@ -165,9 +222,8 @@ class TechnicianController extends Controller
             $intervention->pieces()->sync($request->input('pieces_utilisees'));
         }
 
-        // Si tu veux marquer l'alerte comme traitée manuellement
         if ($intervention->alerte) {
-            $intervention->alerte->update(['status' => 'traitée']);
+            $intervention->alerte->update(['status' => 'Actif']);
         }
 
         return redirect()->route('technicien.historiques')->with('success', 'Réparation enregistrée avec succès.');
@@ -175,7 +231,52 @@ class TechnicianController extends Controller
 
     public function profil()
     {
+        $notifs = Notification::where('user_id', 1)->get();
         $technicien = Auth::user();
-        return view('technicien.profil', compact('technicien'));
+
+        return view('technicien.profil', compact('technicien', 'notifs'));
+    }
+
+    public function updateDateEntree(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'date_entree' => 'required|date',
+        ]);
+
+        $validator->after(function ($validator) use ($request, $id) {
+            $dateEntree = Carbon::parse($request->input('date_entree'));
+            $intervention = Intervention::where('emetteur_id', $id)
+                ->orderBy('date_panne', 'desc')
+                ->first();
+
+            $aujourdhui = Carbon::today();
+
+            if ($dateEntree->gt($aujourdhui)) {
+                $validator->errors()->add('date_entree', 'La date d\'entrée ne peut pas être dans le futur.');
+            }
+
+            if ($intervention) {
+                $datePanne = Carbon::parse($intervention->date_panne);
+                $dateReparation = $intervention->date_reparation ? Carbon::parse($intervention->date_reparation) : null;
+
+                if ($dateEntree->lte($datePanne)) {
+                    $validator->errors()->add('date_entree', 'La date d\'entrée doit être après la date de panne.');
+                }
+
+                if ($dateReparation && $dateEntree->gte($dateReparation)) {
+                    $validator->errors()->add('date_entree', 'La date d\'entrée doit être avant la date de réparation.');
+                }
+            }
+        });
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $emetteur = Emetteur::findOrFail($id);
+        $emetteur->date_entree = $request->input('date_entree');
+        $emetteur->save();
+
+        return redirect()->back()->with('success', 'Date d’entrée mise à jour avec succès.');
     }
 }

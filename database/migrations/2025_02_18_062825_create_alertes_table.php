@@ -10,7 +10,7 @@ class CreateAlertesTable extends Migration
     {
         Schema::create('alertes', function (Blueprint $table) {
             $table->id();              // Clé primaire
-            $table->string('type');    // Type d'alerte
+            $table->string('typeA');    // Type d'alerte
             $table->timestamps();      // created_at et updated_at
         });
     }

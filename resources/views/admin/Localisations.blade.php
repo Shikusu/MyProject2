@@ -31,8 +31,6 @@
 </style>
 
 <div class="container mt-4">
-    <h1 class="text-center" style="font-size: 2.5rem; color: #00703C;">Gestion des Localisations</h1>
-
     <div class="mt-4 row justify-content-center">
         <!-- Form Section -->
         <div class="col-md-4">

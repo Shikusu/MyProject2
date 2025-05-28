@@ -13,7 +13,7 @@ class LocalisationController extends Controller
     public function index()
     {
         $notifs = Notification::where('user_id', 2)->get();
-        $localisations = Localisation::paginate(10); // Affiche 10 localisations par page
+        $localisations = Localisation::paginate(5); // Affiche 10 localisations par page
         return view('admin.localisations', compact('localisations', 'notifs'));
     }
 
@@ -43,7 +43,7 @@ class LocalisationController extends Controller
     // Affiche le formulaire d'édition pour une localisation existante
     public function edit($id)
     {
-        $localisations = Localisation::paginate(10);
+        $localisations = Localisation::paginate(5);
         $localisation = Localisation::findOrFail($id);
         return view('admin.localisations', compact('localisation', 'localisations'));
     }

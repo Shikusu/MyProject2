@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Emetteur;
-use App\Models\Admin\Alerte;
 use App\Models\Admin\Piece;
 use App\Models\Notification;
 use App\Models\Admin\Intervention;
@@ -46,7 +45,7 @@ class InterventionController extends Controller
         $intervention->save();
 
         $emetteur->panne_declenchee = 1;
-        $emetteur->status = 'panne';
+        $emetteur->status = 'En panne';
         $emetteur->date_panne = $request->date_panne;
         $emetteur->save();
 

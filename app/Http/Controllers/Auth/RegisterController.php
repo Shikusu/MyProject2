@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class RegisterController extends Controller
 {
     /**
-     * Show the registration form.
+     * Affiche le formulaire d'inscription.
      */
     public function showRegistrationForm()
     {
@@ -21,31 +21,50 @@ class RegisterController extends Controller
     }
 
     /**
-     * Handle the registration request.
+     * Gère l'enregistrement d'un nouvel utilisateur.
      */
     public function register(Request $request)
     {
-        // Valider les données du formulaire
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+        // Définir les règles de validation
+        $rules = [
+            'name' => 'required|string|max:50',
+            'prenom' => 'required|string|max:50',
+            'matricule' => 'required|string|max:50|unique:users,matricule',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:technicien' . (User::where('role', 'admin')->exists() ? '' : ',admin'),
-        ]);
+            'role' => 'required|in:technicien', // Par défaut que technicien
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // max 2MB
+        ];
 
-        // Vérifier les erreurs de validation
+        // Autoriser le rôle admin si aucun admin n'existe
+        if (!User::where('role', 'admin')->exists()) {
+            $rules['role'] = 'required|in:technicien,admin';
+        }
+
+        // Valider les données
+        $validator = Validator::make($request->all(), $rules);
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Créer un nouvel utilisateur
+        // Gérer l'upload de la photo
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('photos', 'public');
+        }
+
+        // Créer l'utilisateur
         $user = new User();
         $user->name = $request->name;
+        $user->prenom = $request->prenom;
+        $user->matricule = $request->matricule;
         $user->email = $request->email;
-        $user->password = Hash::make($request->password); // Hash du mot de passe
+        $user->password = Hash::make($request->password);
         $user->role = $request->role;
-        $user->save(); // Sauvegarde dans la base de données
+        $user->photo = $photoPath; // chemin relatif ou null
+        $user->save();
 
-        return redirect()->route('login')->with('success', 'Inscription réussie !');
+        return redirect()->route('login')->with('success', 'Inscription réussie ! Vous pouvez vous connecter.');
     }
 }

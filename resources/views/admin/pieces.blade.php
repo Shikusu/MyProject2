@@ -42,8 +42,6 @@
 </style>
 
 <div class="container mt-4">
-    <h1 class="text-center" style="font-size: 2.5rem; color: #00703C;">Gestion des Pièces</h1>
-
     <div class="mt-4 row justify-content-center">
         <div class="col-md-4">
             <div class="border-0 shadow-sm card custom-card">

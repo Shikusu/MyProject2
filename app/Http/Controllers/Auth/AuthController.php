@@ -27,10 +27,9 @@ class AuthController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-        $remember = $request->has('remember'); // Gestion du "Se souvenir de moi"
+        $remember = $request->has('remember');
 
         if (Auth::attempt($credentials, $remember)) {
-            // Redirection selon le rôle de l'utilisateur après la connexion
             return match (Auth::user()->role) {
                 'admin' => redirect()->route('admin.dashboard'),
                 'technicien' => redirect()->route('technicien.dashboard'),
@@ -40,9 +39,8 @@ class AuthController extends Controller
 
         return back()->with('error', 'Identifiants incorrects.');
     }
-
-    /**
-     * Gère la déconnexion de l'utilisateur.
+        /**
+     * Déconnecte l'utilisateur.
      */
     public function logout(Request $request)
     {
@@ -51,6 +49,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Vous avez été déconnecté avec succès');
+        return redirect('/login');
     }
+
 }

@@ -21,6 +21,16 @@ class TechnicianEmetteurController extends Controller
     {
         // Récupérer tous les émetteurs avec leur localisation associée
         $emetteurs = Emetteur::with('localisation')->get();
+                $notifs = Notification::where('user_id', 1)->get();
+
+
+        // Compter les alertes non lues pour le technicien
+        $user = Auth::user();
+        $interventions = Intervention::with('emetteur')
+            ->get();
+        $notifs = Intervention::with('emetteur')
+            ->get();
+
 
         $notificationsCount = Alerte::count(); // Compte simplement toutes les alertes
 
@@ -35,13 +45,20 @@ class TechnicianEmetteurController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function showAlertes()
-    {
-        // Afficher toutes les alertes sans filtrage sur 'technicien_id' ou 'is_read'
-        $alertes = Alerte::all();
+    // public function showAlertes()
+    // {
+    //     // Afficher toutes les alertes sans filtrage sur 'technicien_id' ou 'is_read'
+    //     $alertes = Alerte::all();
 
-        return view('technicien.alertes', compact('alertes'));
-    }
+    //     if (!$user) {
+    //         // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
+    //         return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
+    //     }
+
+
+    //     // Retourner la vue avec les alertes
+    // return view('technicien.alertes', compact('alertes'));
+    // }
 
     /**
      * Marquer une alerte comme lue.
@@ -51,8 +68,20 @@ class TechnicianEmetteurController extends Controller
      */
     public function marquerCommeLue($alerteId)
     {
+
         // Il n'y a plus de champ "status", donc on ne fait rien ici
         return back()->with('info', 'Aucune action effectuée car le champ "status" n’existe plus.');
+        // Vérifier si l'utilisateur est authentifié
+        $user = Auth::user();
+
+        if (!$user) {
+            // Rediriger si l'utilisateur n'est pas authentifié
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
+        }
+
+        // Si l'alerte ne correspond pas au technicien, retourner une erreur
+        return back()->with('error', 'Accès non autorisé à cette alerte.');
+
     }
 
     /**

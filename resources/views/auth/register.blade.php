@@ -3,153 +3,219 @@
 @section('title', 'Inscription')
 
 @section('content')
-<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="shadow-lg card" style="width: 800px; border-radius: 15px;">
-        <div class="row g-0">
-            <!-- Colonne gauche : Formulaire -->
-            <div class="p-5 col-md-6">
-                <h2 class="mb-4 text-center" style="color: #333;">Créer un compte</h2>
-                <form action="{{ route('register.submit') }}" method="POST">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="name" class="form-label">Nom complet :</label>
-                        <input type="text" name="name" id="name" class="form-control input-field"
-                            placeholder="Entrez votre nom" value="{{ old('name') }}" required>
-                        @error('name')
-                        <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-4">
-                        <label for="email" class="form-label">Adresse e-mail :</label>
-                        <input type="email" name="email" id="email" class="form-control input-field"
-                            placeholder="Entrez votre email" value="{{ old('email') }}" required>
-                        @error('email')
-                        <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label">Mot de passe :</label>
-                        <input type="password" name="password" id="password" class="form-control input-field"
-                            placeholder="Créez un mot de passe" required>
-                        @error('password')
-                        <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-4">
-                        <label for="password_confirmation" class="form-label">Confirmer le mot de passe :</label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-field"
-                            placeholder="Confirmer votre mot de passe" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="role" class="form-label">Rôle :</label>
-                        <select name="role" id="role" class="form-select">
-                            <option value="technicien" {{ old('role') == 'technicien' ? 'selected' : '' }}>Technicien</option>
-                            @if (!$adminExists)
-                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                            @endif
-                        </select>
-                        @error('role')
-                        <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary w-100 submit-button">S'inscrire</button>
-                    </div>
-                </form>
-                <p class="mt-3 text-center">
-                    Vous avez déjà un compte ?
-                    <a href="{{ route('login') }}" class="text-primary">Connectez-vous ici</a>.
-                </p>
-            </div>
+    <div class="min-vh-100 d-flex justify-content-center align-items-center" style="font-family: 'Segoe UI', sans-serif;">
+        <div class="p-4 shadow-lg card" style="max-width: 900px; width: 100%; border-radius: 20px;">
+            <div class="row g-0">
+                <!-- Formulaire -->
+                <div class="px-5 py-4 col-md-7">
+                    <h3 class="mb-4 text-center fw-bold text-primary">Créer un compte</h3>
 
-            <!-- Colonne droite : Image -->
-            <div class="col-md-6 d-flex align-items-center justify-content-center bg-light"
-                style="border-left: 1px solid #ddd;">
-                <img src="{{ asset('images/logo-ORTM.png') }}" alt="Logo ORTM" class="img-fluid"
-                    style="max-height: 250px;">
+                    <form action="{{ route('register.submit') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Nom</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="name" id="name" class="form-control form-white"
+                                           placeholder="Nom" value="{{ old('name') }}" required>
+                                </div>
+                                @error('name')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="prenom" class="form-label">Prénom</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="prenom" id="prenom" class="form-control form-white"
+                                           placeholder="Prénom" value="{{ old('prenom') }}">
+                                </div>
+                                @error('prenom')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Adresse e-mail</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" id="email" class="form-control form-white"
+                                           placeholder="email@example.com" value="{{ old('email') }}" required>
+                                </div>
+                                @error('email')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="matricule" class="form-label">Matricule</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                    <input type="text" name="matricule" id="matricule" class="form-control form-white"
+                                           placeholder="Matricule unique" value="{{ old('matricule') }}" required>
+                                </div>
+                                @error('matricule')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="photo" class="form-label">Photo (optionnel)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                <input type="file" name="photo" id="photo" class="form-control form-white">
+                            </div>
+                            @error('photo')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" id="password" class="form-control form-white"
+                                           placeholder="Mot de passe" required>
+                                </div>
+                                @error('password')
+                                <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="password_confirmation" class="form-label">Confirmer</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                           class="form-control form-white" placeholder="Confirmez le mot de passe" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Rôle</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                <select name="role" id="role" class="form-select form-white" required>
+                                    <option value="technicien" {{ old('role') == 'technicien' ? 'selected' : '' }}>Technicien</option>
+                                    @if (!$adminExists)
+                                        <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    @endif
+                                </select>
+                            </div>
+                            @error('role')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold" id="registerButton">
+                                <span id="register-text"><i class="bi bi-person-plus me-2"></i> S'inscrire</span>
+                                <span id="register-spinner" class="spinner-border spinner-border-sm ms-2 d-none"
+                                      role="status" aria-hidden="true"></span>
+                            </button>
+                        </div>
+
+                        <p class="mt-3 mb-0 text-center">
+                            Vous avez déjà un compte ?
+                            <a href="{{ route('login') }}" class="text-decoration-none text-primary fw-bold">Connexion</a>
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Logo -->
+                <div class="bg-white col-md-5 d-flex align-items-center justify-content-center rounded-end">
+                    <img src="{{ asset('images/logo-ORTM.png') }}" alt="Logo ORTM" class="img-fluid" style="max-height: 220px;">
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Inclure Toastify JS et CSS -->
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-<script>
-    @if(session('error'))
-    Toastify({
-        text: '{{ session('
-        error ') }}',
-        duration: 5000,
-        backgroundColor: "linear-gradient(to right, #FF6B6B, #D50000)",
-        close: true,
-        gravity: "top",
-        position: "center",
-        stopOnFocus: true,
-        className: "toast-error"
-    }).showToast();
+    @if (session('error'))
+        <script>
+            Toastify({
+                text: "{{ session('error') }}",
+                duration: 5000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: "#e53935",
+                close: true
+            }).showToast();
+        </script>
     @endif
-</script>
 
-<style>
-    /* Styles supplémentaires pour le design */
-    body {
-        font-family: 'Roboto', sans-serif;
-        background-color: #f4f4f4;
-    }
+    @if (session('success'))
+        <script>
+            Toastify({
+                text: "{{ session('success') }}",
+                duration: 5000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: "#28a745",
+                close: true
+            }).showToast();
+        </script>
+    @endif
 
-    .input-field {
-        border-radius: 30px;
-        padding-left: 40px;
-        border: 1px solid #ddd;
-        transition: border 0.3s ease;
-    }
+    <script>
+        document.getElementById('registerButton').addEventListener('click', function () {
+            const text = document.getElementById('register-text');
+            const spinner = document.getElementById('register-spinner');
+            text.classList.add('d-none');
+            spinner.classList.remove('d-none');
+        });
+    </script>
 
-    .input-field:focus {
-        border-color: #0056b3;
-        box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
-    }
+    <style>
+        .card {
+            border: none;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
 
-    .submit-button {
-        border-radius: 30px;
-        padding: 12px 0;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-        background-color: #0056b3;
-        border: none;
-    }
+        .form-white {
+            background-color: #ffffff !important;
+            border: 1px solid #ccc;
+            color: #000;
+        }
 
-    .submit-button:hover {
-        background-color: #004085;
-    }
+        .form-white:focus {
+            background-color: #ffffff;
+            border-color: #007bff;
+            box-shadow: none;
+        }
 
-    /* Toastify personnalisé */
-    .toast-error {
-        font-weight: bold;
-        font-size: 16px;
-    }
+        .input-group-text {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            color: #555;
+        }
 
-    /* Bordure arrondie pour la carte */
-    .card {
-        border-radius: 15px;
-        border: none;
-    }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
 
-    /* Améliorer la présentation du formulaire */
-    .form-control {
-        font-size: 16px;
-    }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
 
-    .form-label {
-        color: #333;
-    }
+        .form-label {
+            font-weight: 600;
+        }
+    </style>
 
-    .card-header {
-        background-color: #0056b3;
-        color: white;
-        border-radius: 15px 15px 0 0;
-        text-align: center;
-    }
-</style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 @endsection

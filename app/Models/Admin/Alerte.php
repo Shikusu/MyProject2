@@ -8,16 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Alerte extends Model
 {
     use HasFactory;
-    protected $table = 'type_alerte'; 
+    protected $table = 'type_alerte';
+    protected $fillable = ['typeA'];
 
-
-
-    protected $fillable = ['type'];
-
-
-
-    public function emetteur()
-    {
-        return $this->belongsTo(Emetteur::class);
-    }
 }

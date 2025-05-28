@@ -5,9 +5,7 @@
 @section('page-title', 'Gestion des interventions')
 
 @section('contenu')
-<div class="container py-4">
-    <h2 class="mb-4">Gestion des interventions</h2>
-
+<div class="container mt-4">
     <div class="table-responsive">
         <table class="table align-middle table-bordered">
             <thead class="table-light">
@@ -25,9 +23,9 @@
                     <td>{{ $emetteur->localisation->nom ?? 'Non définie' }}</td>
                     <td>
                         @php $status = $emetteur->status; @endphp
-                        @if ($status == 'active')
+                        @if ($status == 'Actif')
                             <span class="badge bg-success">Actif</span>
-                        @elseif ($status == 'panne')
+                        @elseif ($status == 'En panne')
                             <span class="badge bg-danger">En panne</span>
                         @elseif ($status == 'En cours de réparation')
                             <span class="badge bg-warning text-dark">En cours de réparation</span>
@@ -70,10 +68,10 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Dernière maintenance</strong></label>
-                                                <p>{{ $emetteur->dernier_maintenance }}</p>
+                                                <p>{{ $emetteur->derniere_maintenance }}</p>
                                             </div>
 
-                                            @if ($emetteur->status == "active")
+                                            @if ($emetteur->status == "Actif")
                                             <div class="mb-3">
                                                 <label class="form-label"><strong>Date de la panne</strong></label>
                                                 <input type="date" class="form-control"
@@ -128,4 +126,18 @@
         });
     });
 </script>
+@if (session('success'))
+<script>
+    new Noty({
+        type: 'success',
+        layout: 'bottomRight',
+        theme: 'relax', // Tu peux aussi tester 'sunset' ou 'relax'
+        text: "{{ session('success') }}",
+        timeout: 3000,
+        progressBar: true,
+        theme: 'mint',
+    }).show();
+</script>
+@endif
+
 @endsection

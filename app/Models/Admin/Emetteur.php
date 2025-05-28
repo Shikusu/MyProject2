@@ -16,21 +16,23 @@ class Emetteur extends Model
 
     protected $fillable = [
         'type',
-        'id_localisation',
+        'reference',
+        'localisation_id',
         'date_installation',
-        'dernier_maintenance',
+        'derniere_maintenance',
         'maintenance_prevue',
         'status', // Ajouté pour l'état de l'émetteur
         'panne_declenchee', // Ajouté pour marquer la panne
         'date_panne',
-        '' // Ajouté pour enregistrer la date de panne
+        'date_entree',     // 👈 ajouté
+        'date_sortie'      // 👈 ajouté
     ];
 
     // Relation avec la table Localisation
     // Dans le modèle Emetteur
     public function localisation()
     {
-        return $this->belongsTo(Localisation::class, 'id_localisation');
+        return $this->belongsTo(Localisation::class, 'localisation_id');
     }
 
 
@@ -41,10 +43,8 @@ class Emetteur extends Model
     {
         return $this->hasMany(Intervention::class);
     }
-
-    // Relation avec la table Alerte
-    public function alertes()
+    public function derniereIntervention()
     {
-        return $this->hasMany(Alerte::class);
+        return $this->hasOne(Intervention::class)->latestOfMany();
     }
 }

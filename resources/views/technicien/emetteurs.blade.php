@@ -26,8 +26,8 @@
                                 @php
                                     $status = $emetteur->status;
                                     $class = match($status) {
-                                        'active' => 'success',
-                                        'panne' => 'danger',
+                                        'Actif' => 'success',
+                                        'En panne' => 'danger',
                                         'En cours de réparation' => 'warning text-dark',
                                         default => 'secondary'
                                     };
@@ -42,7 +42,7 @@
                                     data-localisation="{{ $emetteur->localisation->nom ?? 'Non défini' }}"
                                     data-type="{{ $emetteur->type }}"
                                     data-installation="{{ $emetteur->date_installation }}"
-                                    data-maintenance="{{ $emetteur->dernier_maintenance }}"
+                                    data-maintenance="{{ $emetteur->derniere_maintenance }}"
                                     data-maintenance-prevue="{{ $emetteur->maintenance_prevue }}"
                                     data-status="{{ $emetteur->status }}">
                                     Voir Détails
@@ -66,12 +66,12 @@
             </div>
             <div class="modal-body">
                 <ul class="mb-0 list-unstyled">
-                    <li><strong>📍 Localisation :</strong> <span id="modalLocalisation"></span></li>
-                    <li><strong>📡 Type :</strong> <span id="modalType"></span></li>
-                    <li><strong>🛠️ Installation :</strong> <span id="modalInstallation"></span></li>
-                    <li><strong>🔧 Dernière maintenance :</strong> <span id="modalMaintenance"></span></li>
-                    <li id="Bye"><strong>📅 Maintenance prévue :</strong> <span id="modalMaintenancePrevue"></span></li>
-                    <li><strong>⚙️ Statut :</strong> <span id="modalStatus" class="badge"></span></li>
+                    <li><strong> Localisation :</strong> <span id="modalLocalisation"></span></li>
+                    <li><strong> Type :</strong> <span id="modalType"></span></li>
+                    <li><strong> Installation :</strong> <span id="modalInstallation"></span></li>
+                    <li><strong> Dernière maintenance :</strong> <span id="modalMaintenance"></span></li>
+                    <li id="Bye"><strong> Maintenance prévue :</strong> <span id="modalMaintenancePrevue"></span></li>
+                    <li><strong> Statut :</strong> <span id="modalStatus" class="badge"></span></li>
                 </ul>
             </div>
             <div class="modal-footer bg-light rounded-bottom-4">
@@ -112,10 +112,10 @@
             modalStatus.className = "badge rounded-pill";
 
             switch (status) {
-                case 'active':
+                case 'Actif':
                     modalStatus.classList.add("bg-success");
                     break;
-                case 'panne':
+                case 'En panne':
                     modalStatus.classList.add("bg-danger");
                     break;
                 case 'En cours de réparation':
