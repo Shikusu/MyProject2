@@ -7,40 +7,39 @@
 
         <div class="row g-4">
 
-            <!-- CARD ÉMETTEURS -->
-            <div class="col-lg-4 col-md-6">
-                <div class="shadow-sm card border-start-5 border-success">
+            <!-- COLONNE GAUCHE: ÉMETTEURS + CALENDRIER empilés verticalement -->
+            <div class="gap-4 col-lg-4 col-md-6 d-flex flex-column">
+
+                <!-- CARD ÉMETTEURS -->
+                <div class="flex-grow-0 shadow-sm card border-start-5 border-success">
                     <div class="card-body">
                         <h5 class="card-title d-flex align-items-center text-success">
                             <i class="bi bi-send-fill me-2"></i> Émetteurs
                         </h5>
                         <h3 class="display-6 text-success">{{ $nombreEmetteurs }}</h3>
-                        <a href="{{ route('technicien.emetteurs') }}" class="mt-3 btn btn-outline-success btn-sm">→ Voir les
-                            émetteurs</a>
+                        <a href="{{ route('technicien.emetteurs') }}" class="mt-3 btn btn-outline-success btn-sm">→ Voir les émetteurs</a>
                     </div>
                 </div>
-            </div>
 
-            <!-- CALENDRIER DES MAINTENANCES -->
-            <div class="col-lg-8 col-md-6">
-                <div class="shadow-sm card">
-                    <div class="card-body">
-                        <h5 class="card-title text-dark">
+                <!-- CALENDRIER DES MAINTENANCES -->
+                <div class="shadow-sm card flex-grow-1">
+                    <div class="p-3 card-body">
+                        <h5 class="mb-3 card-title text-dark">
                             <i class="bi bi-calendar-event me-2"></i> Calendrier des maintenances & réparations
                         </h5>
-                        <div id="calendar"></div>
+                        <div id="calendar" style="height: 300px;"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- STATISTIQUES -->
-            <div class="mt-4 col-12">
-                <div class="shadow-sm card">
+            <!-- COLONNE DROITE: STATISTIQUES -->
+            <div class="col-lg-8 col-md-6 d-flex align-items-stretch">
+                <div class="shadow-sm card w-100">
                     <div class="card-body">
                         <h5 class="card-title text-dark">
                             <i class="bi bi-bar-chart-line me-2"></i> Statut des émetteurs
                         </h5>
-                        <canvas id="statusChart" style="height: 250px; width: 100%;"></canvas>
+                        <canvas id="statusChart" style="height: 100%; width: 100%; max-height: 350px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -67,6 +66,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'top',

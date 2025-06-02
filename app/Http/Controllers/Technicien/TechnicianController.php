@@ -183,60 +183,64 @@ class TechnicianController extends Controller
     }
 
     public function saveRepair(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'date_reparation' => 'required|date',
-            'pieces_utilisees' => 'nullable|array',
-            'pieces_utilisees.*' => 'exists:pieces,id',
-            'details_reparation' => 'required|string',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'date_reparation' => 'required|date',
+        'pieces_utilisees' => 'nullable|array',
+        'pieces_utilisees.*' => 'exists:pieces,id',
+        'details_reparation' => 'required|string',
+    ]);
 
-        $validator->after(function ($validator) use ($request) {
-            $date = Carbon::parse($request->input('date_reparation'));
-            $now = Carbon::today();
-            $max = $now->copy()->addDays(60);
+    $validator->after(function ($validator) use ($request) {
+        $date = Carbon::parse($request->input('date_reparation'));
+        $now = Carbon::today();
+        $max = $now->copy()->addDays(60);
 
-            if ($date->lt($now)) {
-                $validator->errors()->add('date_reparation', 'La date ne peut pas être dans le passé.');
-            }
-            if ($date->gt($max)) {
-                $validator->errors()->add('date_reparation', 'La date ne peut pas dépasser 60 jours.');
-            }
-        });
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+        if ($date->lt($now)) {
+            $validator->errors()->add('date_reparation', 'La date ne peut pas être dans le passé.');
         }
-
-        $intervention = Intervention::findOrFail($id);
-        $emetteur = $intervention->emetteur;
-
-        $intervention->update([
-            'details_reparation' => $request->input('details_reparation'),
-            'date_reparation' => $request->input('date_reparation'),
-        ]);
-
-        if ($emetteur) {
-            $emetteur->update([
-                'status' => 'Actif',
-                'derniere_maintenance' => $request->input('date_reparation'),
-            ]);
+        if ($date->gt($max)) {
+            $validator->errors()->add('date_reparation', 'La date ne peut pas dépasser 60 jours.');
         }
+    });
 
-        if ($request->has('pieces_utilisees')) {
-            $pieces = Piece::whereIn('id', $request->input('pieces_utilisees'))->get();
-            foreach ($pieces as $piece) {
-                $piece->decrement('quantite', 1);
-            }
-            $intervention->pieces()->sync($request->input('pieces_utilisees'));
-        }
-
-        if ($intervention->alerte) {
-            $intervention->alerte->update(['status' => 'Actif']);
-        }
-
-        return redirect()->route('technicien.historiques')->with('success', 'Réparation enregistrée avec succès.');
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
     }
+
+    $intervention = Intervention::findOrFail($id);
+    $emetteur = $intervention->emetteur;
+
+    $dateReparation = Carbon::parse($request->input('date_reparation'));
+
+    $intervention->update([
+        'details_reparation' => $request->input('details_reparation'),
+        'date_reparation' => $dateReparation,
+    ]);
+
+    if ($emetteur) {
+        $emetteur->update([
+            'status' => 'Actif',
+            'derniere_maintenance' => $dateReparation,
+            'maintenance_prevue' => $dateReparation->copy()->addDays(60),
+        ]);
+    }
+
+    if ($request->has('pieces_utilisees')) {
+        $pieces = Piece::whereIn('id', $request->input('pieces_utilisees'))->get();
+        foreach ($pieces as $piece) {
+            $piece->decrement('quantite', 1);
+        }
+        $intervention->pieces()->sync($request->input('pieces_utilisees'));
+    }
+
+    if ($intervention->alerte) {
+        $intervention->alerte->update(['status' => 'Actif']);
+    }
+
+    return redirect()->route('technicien.historiques')->with('success', 'Réparation enregistrée avec succès.');
+}
+
 
     public function lancerReparation(Request $request, $id)
     {
