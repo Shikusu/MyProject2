@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Notification;
 
 class ProfileController extends Controller
 {
-     // Mise à jour des informations du profil
+    // Mise à jour des informations du profil
     public function updateProfile(Request $request)
     {
-
         $technicien = Auth::user();
 
         $request->validate([
@@ -24,9 +22,10 @@ class ProfileController extends Controller
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->ignore($technicien->id),'max(30)'
+                'max:30',
+                Rule::unique('users')->ignore($technicien->id),
             ],
-            'photo' => ['nullable', 'image', 'max:2048'], // max 2Mo
+            'photo' => ['nullable', 'image', 'max:2048'], // max 2 Mo
         ]);
 
         $technicien->name = $request->input('name');
@@ -34,7 +33,6 @@ class ProfileController extends Controller
         $technicien->email = $request->input('email');
 
         if ($request->hasFile('photo')) {
-            // Supprimer l'ancienne photo si existante
             if ($technicien->photo) {
                 Storage::disk('public')->delete($technicien->photo);
             }
@@ -50,19 +48,18 @@ class ProfileController extends Controller
     // Mise à jour du mot de passe
     public function update(Request $request)
     {
-    $technicien = Auth::user();
+        $technicien = Auth::user();
 
         $request->validate([
             'current_password' => ['required'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'], // password_confirmation doit être présent dans le form
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if (!Hash::check($request->input('current_password'), $technicien->password)) {
-            return redirect()->route('technicien.profil')
-                ->with('password_error', 'Le mot de passe actuel est incorrect.');
+        if (!Hash::check($request->current_password, $technicien->password)) {
+            return back()->with('password_error', 'Le mot de passe actuel est incorrect.');
         }
 
-        $technicien->password = Hash::make($request->input('password'));
+        $technicien->password = Hash::make($request->password);
         $technicien->save();
 
         return redirect()->route('technicien.profil')->with('success', 'Mot de passe modifié avec succès.');

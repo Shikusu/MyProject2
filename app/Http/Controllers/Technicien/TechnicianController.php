@@ -51,7 +51,7 @@ class TechnicianController extends Controller
     public function markAsRead($id)
     {
         $notif = Notification::find($id);
-        if ($notif && $notif->est_lu == 0) {
+        if ($notif && !$notif->est_lu) {
             $notif->est_lu = 1;
             $notif->save();
         }
@@ -71,14 +71,12 @@ class TechnicianController extends Controller
             }
 
             $derniereIntervention = $emetteur->interventions()
-                ->where('status', 'En cours de réparation')
                 ->orderBy('date_reparation', 'desc')
                 ->first();
 
             if ($derniereIntervention && $derniereIntervention->date_reparation) {
                 $dateReparation = Carbon::parse($derniereIntervention->date_reparation);
                 if ($aujourdhui->gte($dateReparation)) {
-                    $derniereIntervention->update(['status' => 'Actif']);
                     $emetteur->update([
                         'status' => 'Actif',
                         'derniere_maintenance' => now()
@@ -151,7 +149,6 @@ class TechnicianController extends Controller
             'emetteur_id' => $emetteurId,
             'date_panne' => $request->input('date_panne'),
             'type_alerte' => $request->input('type'),
-            'status' => 'En cours de réparation',
         ]);
 
         return redirect()->route('technicien.alertes')->with('success', 'Alerte déclenchée.');
@@ -160,7 +157,6 @@ class TechnicianController extends Controller
     public function showRepairForm($id)
     {
         $intervention = Intervention::with('emetteur')->find($id);
-
         if (!$intervention) {
             return response()->json(['error' => 'Intervention non trouvée'], 404);
         }
@@ -189,10 +185,24 @@ class TechnicianController extends Controller
     public function saveRepair(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
+            'date_reparation' => 'required|date',
             'pieces_utilisees' => 'nullable|array',
             'pieces_utilisees.*' => 'exists:pieces,id',
             'details_reparation' => 'required|string',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $date = Carbon::parse($request->input('date_reparation'));
+            $now = Carbon::today();
+            $max = $now->copy()->addDays(60);
+
+            if ($date->lt($now)) {
+                $validator->errors()->add('date_reparation', 'La date ne peut pas être dans le passé.');
+            }
+            if ($date->gt($max)) {
+                $validator->errors()->add('date_reparation', 'La date ne peut pas dépasser 60 jours.');
+            }
+        });
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -202,15 +212,14 @@ class TechnicianController extends Controller
         $emetteur = $intervention->emetteur;
 
         $intervention->update([
-            'status' => 'Actif',
             'details_reparation' => $request->input('details_reparation'),
-            'date_reparation' => now(),
+            'date_reparation' => $request->input('date_reparation'),
         ]);
 
         if ($emetteur) {
             $emetteur->update([
                 'status' => 'Actif',
-                'derniere_maintenance' => now(),
+                'derniere_maintenance' => $request->input('date_reparation'),
             ]);
         }
 
@@ -227,6 +236,46 @@ class TechnicianController extends Controller
         }
 
         return redirect()->route('technicien.historiques')->with('success', 'Réparation enregistrée avec succès.');
+    }
+
+    public function lancerReparation(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'date_reparation' => 'required|date|after_or_equal:today',
+            'description' => 'nullable|string',
+            'pieces' => 'nullable|array',
+            'pieces.*.id' => 'required|exists:pieces,id',
+            'pieces.*.quantite' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation échouée',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $intervention = Intervention::findOrFail($id);
+        $intervention->update([
+            'date_reparation' => $request->date_reparation,
+            'description' => $request->description,
+        ]);
+
+        $intervention->emetteur->update([
+            'status' => 'En cours de réparation'
+        ]);
+
+        if ($request->has('pieces')) {
+            foreach ($request->pieces as $pieceData) {
+                $intervention->pieces()->attach($pieceData['id'], [
+                    'quantite' => $pieceData['quantite']
+                ]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Lancement de la réparation enregistré avec succès.'
+        ]);
     }
 
     public function profil()

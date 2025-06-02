@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 28 mai 2025 à 07:30
+-- Généré le : lun. 02 juin 2025 à 06:34
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -81,12 +81,12 @@ CREATE TABLE IF NOT EXISTS `emetteurs` (
 --
 
 INSERT INTO `emetteurs` (`id`, `reference`, `type`, `localisation_id`, `date_installation`, `derniere_maintenance`, `maintenance_prevue`, `status`, `created_at`, `updated_at`, `panne_declenchee`, `date_panne`, `date_entree`, `date_sortie`) VALUES
-(65, 'ET - 12345', 'television', 12, '2024-02-14', '2025-04-02', '2025-05-29', 'En cours de réparation', '2025-05-26 09:18:37', '2025-05-27 09:22:20', 1, '2025-05-08', NULL, NULL),
+(65, 'ET - 12345', 'television', 12, '2024-02-14', '2025-04-02', '2025-09-05', 'En panne', '2025-05-26 09:18:37', '2025-05-28 11:15:11', 1, '2025-05-26', NULL, NULL),
 (66, 'ER - 12345', 'radio', 15, '2024-04-30', '2025-05-17', '2025-05-28', 'En cours de réparation', '2025-05-26 09:30:56', '2025-05-27 09:28:05', 1, '2025-05-22', NULL, NULL),
-(67, 'ET - 00013', 'television', 9, '2024-01-31', '2025-05-26', '2025-05-27', 'En cours de réparation', '2025-05-26 11:29:33', '2025-05-27 09:57:40', 1, '2025-05-20', NULL, NULL),
-(68, 'ER - 00027', 'radio', 10, '2025-05-26', '2025-05-26', '2025-05-28', 'En cours de réparation', '2025-05-26 12:01:23', '2025-05-27 11:14:34', 1, '2025-05-02', NULL, NULL),
-(69, 'ER - 00028', 'radio', 11, '2025-05-26', '2025-05-26', '2025-05-28', 'En cours de réparation', '2025-05-27 03:02:50', '2025-05-27 10:14:15', 1, '2025-05-18', NULL, NULL),
-(70, 'ET - 00026', 'television', 3, '2025-05-27', '2025-05-27', '2025-08-01', 'En panne', '2025-05-27 03:07:54', '2025-05-27 11:15:19', 1, '2025-05-07', NULL, NULL),
+(67, 'ET - 00013', 'television', 9, '2024-01-31', '2025-05-28', '2025-06-19', 'En panne', '2025-05-26 11:29:33', '2025-05-28 11:16:40', 1, '2025-05-24', NULL, NULL),
+(68, 'ER - 00027', 'radio', 10, '2025-05-26', '2025-05-28', '2025-05-31', 'Actif', '2025-05-26 12:01:23', '2025-05-28 09:20:54', 1, '2025-05-02', NULL, NULL),
+(69, 'ER - 00028', 'radio', 11, '2025-05-26', '2025-05-28', '2025-05-29', 'Actif', '2025-05-27 03:02:50', '2025-05-28 09:20:54', 1, '2025-05-18', NULL, NULL),
+(70, 'ET - 00026', 'television', 3, '2025-05-27', '2025-05-27', '2025-06-01', 'Actif', '2025-05-27 03:07:54', '2025-05-28 07:27:56', 1, '2025-05-07', NULL, NULL),
 (71, 'ER - 23456', 'radio', 4, '2025-04-29', '2025-04-29', '2025-07-10', 'En panne', '2025-05-27 03:23:32', '2025-05-27 11:16:25', 1, '2025-05-01', NULL, NULL);
 
 -- --------------------------------------------------------
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `interventions` (
   PRIMARY KEY (`id`),
   KEY `interventions_emetteur_id_foreign` (`emetteur_id`),
   KEY `interventions_piece_id_foreign` (`piece_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `interventions`
@@ -155,8 +155,10 @@ INSERT INTO `interventions` (`id`, `emetteur_id`, `piece_id`, `date_panne`, `typ
 (21, 67, NULL, '2025-05-20', 'Panne matériel', 'qsdfghjklm', '2025-05-27', NULL, NULL, 'en attente', '2025-05-27 09:56:50', '2025-05-27 09:57:40', NULL, '2025-05-27'),
 (22, 68, NULL, '2025-05-02', 'Panne matériel', 'ssssssssssssss', '2025-05-27', NULL, NULL, 'en attente', '2025-05-27 10:13:05', '2025-05-27 11:14:34', NULL, '2025-05-27'),
 (23, 69, NULL, '2025-05-18', 'Problème réseau', 'wwwwwwwwww', '2025-05-27', NULL, NULL, 'en attente', '2025-05-27 10:13:17', '2025-05-27 10:14:15', NULL, '2025-05-27'),
-(24, 70, NULL, '2025-05-07', 'Panne matériel', 'bbbbbbbbbbbbbb', NULL, NULL, NULL, 'en attente', '2025-05-27 11:15:19', '2025-05-27 11:15:19', NULL, NULL),
-(25, 71, NULL, '2025-05-01', 'Panne matériel', 'ddddddddddddd', NULL, NULL, NULL, 'en attente', '2025-05-27 11:16:25', '2025-05-27 11:16:25', NULL, NULL);
+(24, 70, NULL, '2025-05-07', 'Panne matériel', 'bbbbbbbbbbbbbb', '2025-06-01', NULL, NULL, 'en attente', '2025-05-27 11:15:19', '2025-05-28 07:27:56', NULL, '2025-05-28'),
+(25, 71, NULL, '2025-05-01', 'Panne matériel', 'ddddddddddddd', NULL, NULL, NULL, 'en attente', '2025-05-27 11:16:25', '2025-05-27 11:16:25', NULL, NULL),
+(26, 65, NULL, '2025-05-26', 'Panne matériel', 'qsdfghjkrftrfdcd', NULL, NULL, NULL, 'en attente', '2025-05-28 11:15:11', '2025-05-28 11:15:11', NULL, NULL),
+(27, 67, NULL, '2025-05-24', 'Problème réseau', 'hjbhjjvhgvnb', NULL, NULL, NULL, 'en attente', '2025-05-28 11:16:40', '2025-05-28 11:16:40', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -343,7 +345,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `notifications_user_id_foreign` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `notifications`
@@ -392,8 +394,11 @@ INSERT INTO `notifications` (`id`, `message`, `user_id`, `est_lu`, `created_at`,
 (40, 'La radio localisée à Sambava est en panne', 1, 1, '2025-05-27 10:13:17', '2025-05-27 10:13:40'),
 (41, 'La radio localisée à Sambava est en cours de réparation', 2, 1, '2025-05-27 10:14:15', '2025-05-27 11:15:02'),
 (42, 'La radio localisée à Nosy Be est en cours de réparation', 2, 1, '2025-05-27 11:14:34', '2025-05-27 11:15:04'),
-(43, 'La television localisée à Fianarantsoa est en panne', 1, 0, '2025-05-27 11:15:19', '2025-05-27 11:15:19'),
-(44, 'La radio localisée à Mahajanga est en panne', 1, 0, '2025-05-27 11:16:25', '2025-05-27 11:16:25');
+(43, 'La television localisée à Fianarantsoa est en panne', 1, 1, '2025-05-27 11:15:19', '2025-05-28 08:54:38'),
+(44, 'La radio localisée à Mahajanga est en panne', 1, 1, '2025-05-27 11:16:25', '2025-05-28 09:02:45'),
+(45, 'La television localisée à Fianarantsoa est en cours de réparation', 2, 1, '2025-05-28 07:27:56', '2025-05-28 07:28:15'),
+(46, 'La television localisée à Antsirabe est en panne', 1, 0, '2025-05-28 11:15:11', '2025-05-28 11:15:11'),
+(47, 'La television localisée à Manakara est en panne', 1, 0, '2025-05-28 11:16:40', '2025-05-28 11:16:40');
 
 -- --------------------------------------------------------
 
@@ -500,7 +505,9 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('cT1RC1KWXw7NNLH8IvFLmtKp5kMHYUZzdVbdcnKt', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoidWJXTktFTVlKV0tNeWlJWklJMVVmcVdJdnNOVnViSVd6d2dsUXByVSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90ZWNobmljaWVuIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1748414443);
+('XdKkajbNL9L6HalHaZjPLVIKkRT5PWqVeyl6ni0l', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVnRHTmFEcnpoRE1XOFRRdVpRUGZybE02VzlYRGtTRkZ6cDlSNldmUiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC90ZWNobmljaWVuIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1748441822),
+('83c21xjxysspC25AZ0M6aWKrrO9idn7DMKrk9Pdr', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRGRJd1lXRlFDNU96VXViYnRISlIxZ0U5TW1LeWpqbDhPNGRueHprTSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1748441993),
+('1lyuMlWeArD5l1TN8Xj57REe6hovzRNtwoF45ly6', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNmdaY2Ewd3RuZDl6WFA3V1llbkM0c3NKUkdMU1VIRWpwN0o3V284VCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1748845869);
 
 -- --------------------------------------------------------
 
@@ -574,7 +581,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`, `matricule`, `photo`, `prenom`) VALUES
 (1, 'RAKOTONDRANAIVO', 'adminr@gmail.com', NULL, '$2y$12$zFVyJiuci5tgyBA7.OEY9egXndYzIGmXU4rnknFlcNqUgs2Lvqs.i', 'admin', NULL, '2025-04-18 09:05:44', '2025-05-27 04:37:25', NULL, '1748331445_Auth.PNG', 'Lantosoa'),
-(2, 'Nasandratra', 'nasandratrar@gmail.com', NULL, '$2y$12$yDGMgYWUtPnhkbGlNfA7QOIiRZpJFNtROew498quma.PBtcAQWZK6', 'technicien', NULL, '2025-04-18 09:05:59', '2025-04-18 09:05:59', NULL, NULL, NULL),
+(2, 'Nasandratra', 'nasandratrar@gmail.com', NULL, '$2y$12$yDGMgYWUtPnhkbGlNfA7QOIiRZpJFNtROew498quma.PBtcAQWZK6', 'technicien', NULL, '2025-04-18 09:05:59', '2025-05-28 09:26:50', NULL, 'techniciens/photos/VYva0t3bGvLDTById5qZ1wr6aPhuXNXpG5xZH4EI.jpg', 'Rakoto'),
 (3, 'Fanantenana', 'fanantenana@gmail.com', NULL, '$2y$12$8AZuIoZcpzQWkCrXnQGnF.XwcWOA/EuGT62X0WgcDmDf1Ojh.00bW', 'technicien', NULL, '2025-05-08 06:45:22', '2025-05-08 06:45:22', NULL, NULL, NULL),
 (4, 'Rakotondranaivo', 'rakoto2405@gmail.com', NULL, '$2y$12$EfFD2XWoJ5OiXHfbulWHyu/HTnhNeiczU/Wly41dbuhpFtMi3Tp8y', 'technicien', NULL, '2025-05-19 09:53:50', '2025-05-19 09:53:50', NULL, NULL, NULL),
 (5, 'Rakotondrazafy', 'rakotondrazafy@gmail.com', NULL, '$2y$12$aCvb83995F8/4wua6Q9/6.l2QtUD4ZqrxVUyviyTZEe1nUrHz.PAG', 'technicien', NULL, '2025-05-19 10:04:23', '2025-05-19 10:04:23', NULL, NULL, NULL),
